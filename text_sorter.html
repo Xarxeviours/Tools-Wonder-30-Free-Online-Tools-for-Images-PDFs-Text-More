@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Shortener | Multi-Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-color: #202124;
+            --bg-color: #ffffff;
+            --border-color: #dadce0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --success-color: #34a853;
+            --error-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .tool-card {
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+
+        .text-area-container {
+            margin-bottom: 20px;
+        }
+
+        .text-area-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .text-area {
+            width: 100%;
+            min-height: 150px;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            resize: vertical;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        .text-area:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .length-control {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .length-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .length-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            flex: 2;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d5bba;
+        }
+
+        .btn-primary:disabled {
+            background-color: #c5c5c5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background-color: #c5c5c5;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-success:hover {
+            background-color: #2d9249;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            color: #5f6368;
+            font-size: 14px;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .status.success {
+            background-color: rgba(52, 168, 83, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status.error {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+        }
+
+        @media (max-width: 600px) {
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .buttons button {
+                width: 100%;
+                flex: auto;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .length-control {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Text Shortener</h1>
+        
+        <div class="tool-card">
+            <div class="text-area-container">
+                <label for="input-text" class="text-area-label">Original Text</label>
+                <textarea id="input-text" class="text-area" placeholder="Paste your long text here..."></textarea>
+                <div class="stats">
+                    <span id="input-words">0 words</span>
+                    <span id="input-chars">0 characters</span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <div class="length-control">
+                    <label for="shorten-length" class="length-label">Shorten to:</label>
+                    <select id="shorten-length" class="length-input">
+                        <option value="25">25% of original</option>
+                        <option value="50" selected>50% of original</option>
+                        <option value="75">75% of original</option>
+                        <option value="custom">Custom length</option>
+                    </select>
+                </div>
+                <div class="length-control" id="custom-length-container" style="display: none;">
+                    <label for="custom-length" class="length-label">Max words:</label>
+                    <input type="number" id="custom-length" class="length-input" min="1" placeholder="Enter word count">
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button id="shorten-btn" class="btn-primary">
+                    <i class="fas fa-compress-alt"></i> Shorten Text
+                </button>
+                <button id="copy-btn" class="btn-success">
+                    <i class="far fa-copy"></i> Copy Result
+                </button>
+                <button id="clear-btn" class="btn-secondary">
+                    <i class="fas fa-eraser"></i> Clear All
+                </button>
+            </div>
+            
+            <div class="text-area-container">
+                <label for="output-text" class="text-area-label">Shortened Text</label>
+                <textarea id="output-text" class="text-area" readonly placeholder="Your shortened text will appear here..."></textarea>
+                <div class="stats">
+                    <span id="output-words">0 words</span>
+                    <span id="output-chars">0 characters</span>
+                    <span id="reduction">0% reduction</span>
+                </div>
+            </div>
+            
+            <div id="status" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const inputText = document.getElementById('input-text');
+            const outputText = document.getElementById('output-text');
+            const shortenBtn = document.getElementById('shorten-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const shortenLength = document.getElementById('shorten-length');
+            const customLengthContainer = document.getElementById('custom-length-container');
+            const customLength = document.getElementById('custom-length');
+            const statusEl = document.getElementById('status');
+            const inputWordsEl = document.getElementById('input-words');
+            const inputCharsEl = document.getElementById('input-chars');
+            const outputWordsEl = document.getElementById('output-words');
+            const outputCharsEl = document.getElementById('output-chars');
+            const reductionEl = document.getElementById('reduction');
+            
+            // Toggle custom length input
+            shortenLength.addEventListener('change', function() {
+                customLengthContainer.style.display = this.value === 'custom' ? 'block' : 'none';
+            });
+            
+            // Update stats
+            function updateStats() {
+                const inputValue = inputText.value;
+                const outputValue = outputText.value;
+                
+                // Input stats
+                const inputWordCount = inputValue ? inputValue.trim().split(/\s+/).length : 0;
+                inputWordsEl.textContent = `${inputWordCount} word${inputWordCount !== 1 ? 's' : ''}`;
+                inputCharsEl.textContent = `${inputValue.length} character${inputValue.length !== 1 ? 's' : ''}`;
+                
+                // Output stats
+                const outputWordCount = outputValue ? outputValue.trim().split(/\s+/).length : 0;
+                outputWordsEl.textContent = `${outputWordCount} word${outputWordCount !== 1 ? 's' : ''}`;
+                outputCharsEl.textContent = `${outputValue.length} character${outputValue.length !== 1 ? 's' : ''}`;
+                
+                // Reduction percentage
+                if (inputValue && outputValue) {
+                    const reduction = Math.round(100 - (outputValue.length / inputValue.length * 100));
+                    reductionEl.textContent = `${reduction}% reduction`;
+                } else {
+                    reductionEl.textContent = '0% reduction';
+                }
+                
+                // Enable/disable buttons
+                shortenBtn.disabled = inputValue.trim() === '';
+                copyBtn.disabled = outputValue.trim() === '';
+            }
+            
+            // Show status message
+            function showStatus(message, type) {
+                statusEl.textContent = message;
+                statusEl.className = 'status ' + type;
+                statusEl.style.display = 'block';
+                
+                // Hide status after 3 seconds
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 3000);
+            }
+            
+            // Shorten text
+            function shortenText() {
+                const text = inputText.value.trim();
+                if (!text) {
+                    showStatus('Please enter some text to shorten', 'error');
+                    return;
+                }
+                
+                let targetLength;
+                const option = shortenLength.value;
+                
+                if (option === 'custom') {
+                    const customWords = parseInt(customLength.value);
+                    if (isNaN(customWords)) {
+                        showStatus('Please enter a valid word count', 'error');
+                        return;
+                    }
+                    targetLength = customWords;
+                } else {
+                    const percentage = parseInt(option) / 100;
+                    const wordCount = text.split(/\s+/).length;
+                    targetLength = Math.max(1, Math.floor(wordCount * percentage));
+                }
+                
+                // Simple shortening algorithm (in a real app you might use more sophisticated NLP)
+                const sentences = text.split(/(?<=[.!?])\s+/);
+                let shortened = '';
+                let wordCount = 0;
+                
+                for (const sentence of sentences) {
+                    const words = sentence.split(/\s+/);
+                    if (wordCount + words.length <= targetLength) {
+                        shortened += sentence + ' ';
+                        wordCount += words.length;
+                    } else {
+                        const remaining = targetLength - wordCount;
+                        if (remaining > 0) {
+                            shortened += words.slice(0, remaining).join(' ') + ' ';
+                        }
+                        break;
+                    }
+                }
+                
+                // Trim and add ellipsis if we cut text short
+                shortened = shortened.trim();
+                if (shortened.length < text.length) {
+                    shortened += '...';
+                }
+                
+                outputText.value = shortened;
+                updateStats();
+                showStatus(`Text shortened to ${wordCount} words`, 'success');
+            }
+            
+            // Copy output to clipboard
+            function copyOutput() {
+                if (!outputText.value.trim()) {
+                    showStatus('No text to copy', 'error');
+                    return;
+                }
+                
+                outputText.select();
+                document.execCommand('copy');
+                
+                // Deselect text
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                
+                showStatus('Copied to clipboard!', 'success');
+            }
+            
+            // Clear all text
+            function clearAll() {
+                inputText.value = '';
+                outputText.value = '';
+                updateStats();
+                showStatus('Cleared all text', 'success');
+            }
+            
+            // Event listeners
+            inputText.addEventListener('input', updateStats);
+            shortenBtn.addEventListener('click', shortenText);
+            copyBtn.addEventListener('click', copyOutput);
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Handle paste event
+            inputText.addEventListener('paste', function(e) {
+                // Let the paste happen first
+                setTimeout(updateStats, 0);
+            });
+            
+            // Initialize stats
+            updateStats();
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                // Ctrl+Enter to shorten text
+                if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    shortenText();
+                }
+                
+                // Ctrl+Shift+C to copy output
+                if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                    e.preventDefault();
+                    copyOutput();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

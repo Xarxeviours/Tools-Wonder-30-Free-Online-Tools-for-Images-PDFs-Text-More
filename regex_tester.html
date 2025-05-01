@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regex Tester | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-color: #202124;
+            --bg-color: #ffffff;
+            --border-color: #dadce0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --success-color: #34a853;
+            --error-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .tool-card {
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .regex-input {
+            font-family: 'Courier New', monospace;
+        }
+
+        .flags {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .flag-option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .flag-option input {
+            width: auto;
+        }
+
+        .results {
+            margin-top: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .result-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            background-color: var(--primary-light);
+            border-radius: 0 0 4px 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            min-height: 100px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .match-highlight {
+            background-color: rgba(26, 115, 232, 0.2);
+            border-radius: 2px;
+            padding: 0 2px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d5bba;
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #c5c5c5;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .status.success {
+            background-color: rgba(52, 168, 83, 0.1);
+            color: var(--success-color);
+            display: block;
+        }
+
+        .status.error {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: var(--error-color);
+            display: block;
+        }
+
+        .message {
+            color: var(--primary-color);
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .buttons button {
+                flex: 100%;
+            }
+            
+            .flag-option {
+                flex: 1 0 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Regex Tester</h1>
+        
+        <div class="tool-card">
+            <div class="input-group">
+                <label for="regex-input">Regular Expression</label>
+                <input type="text" id="regex-input" class="regex-input" placeholder="Enter your regex pattern (e.g., \b\w+\b)">
+            </div>
+            
+            <div class="flags">
+                <div class="flag-option">
+                    <input type="checkbox" id="flag-i">
+                    <label for="flag-i">i (case insensitive)</label>
+                </div>
+                <div class="flag-option">
+                    <input type="checkbox" id="flag-g">
+                    <label for="flag-g">g (global match)</label>
+                </div>
+                <div class="flag-option">
+                    <input type="checkbox" id="flag-m">
+                    <label for="flag-m">m (multiline)</label>
+                </div>
+                <div class="flag-option">
+                    <input type="checkbox" id="flag-s">
+                    <label for="flag-s">s (dotall)</label>
+                </div>
+                <div class="flag-option">
+                    <input type="checkbox" id="flag-u">
+                    <label for="flag-u">u (unicode)</label>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="test-text">Test Text</label>
+                <textarea id="test-text" placeholder="Enter text to test your regex against"></textarea>
+            </div>
+            
+            <div class="buttons">
+                <button id="test-btn" class="btn-primary">Test Regex</button>
+                <button id="clear-btn" class="btn-secondary">Clear All</button>
+                <button id="copy-btn" class="btn-secondary">Copy Output</button>
+            </div>
+            
+            <div id="status" class="status"></div>
+            <div id="message" class="message">Results copied to clipboard!</div>
+            
+            <div class="results">
+                <div class="result-tabs">
+                    <div class="tab active" data-tab="matches">Matches</div>
+                    <div class="tab" data-tab="groups">Groups</div>
+                    <div class="tab" data-tab="highlight">Highlighted</div>
+                </div>
+                
+                <div id="matches" class="tab-content active"></div>
+                <div id="groups" class="tab-content"></div>
+                <div id="highlight" class="tab-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const regexInput = document.getElementById('regex-input');
+            const testText = document.getElementById('test-text');
+            const testBtn = document.getElementById('test-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const statusEl = document.getElementById('status');
+            const messageEl = document.getElementById('message');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const flagOptions = {
+                i: document.getElementById('flag-i'),
+                g: document.getElementById('flag-g'),
+                m: document.getElementById('flag-m'),
+                s: document.getElementById('flag-s'),
+                u: document.getElementById('flag-u')
+            };
+
+            // Test the regex
+            function testRegex() {
+                const regexStr = regexInput.value;
+                const text = testText.value;
+                
+                if (!regexStr) {
+                    showStatus('Please enter a regular expression', 'error');
+                    return;
+                }
+                
+                if (!text) {
+                    showStatus('Please enter some text to test against', 'error');
+                    return;
+                }
+                
+                try {
+                    // Get selected flags
+                    let flags = '';
+                    for (const [flag, el] of Object.entries(flagOptions)) {
+                        if (el.checked) flags += flag;
+                    }
+                    
+                    // Create regex (handle invalid patterns)
+                    const regex = new RegExp(regexStr, flags);
+                    
+                    // Test for matches
+                    const matches = [...text.matchAll(regex)];
+                    const groups = [];
+                    const highlightedText = highlightMatches(text, matches);
+                    
+                    // Process matches and groups
+                    matches.forEach((match, i) => {
+                        if (match.groups) {
+                            const groupObj = {
+                                match: match[0],
+                                index: match.index,
+                                groups: {}
+                            };
+                            
+                            for (const [name, value] of Object.entries(match.groups)) {
+                                groupObj.groups[name] = {
+                                    value: value,
+                                    index: match.indices?.groups?.[name]?.[0] || null
+                                };
+                            }
+                            
+                            groups.push(groupObj);
+                        } else if (match.length > 1) {
+                            // Capture groups without names
+                            const groupObj = {
+                                match: match[0],
+                                index: match.index,
+                                groups: {}
+                            };
+                            
+                            for (let j = 1; j < match.length; j++) {
+                                groupObj.groups[`$${j}`] = {
+                                    value: match[j],
+                                    index: match.indices?.[j]?.[0] || null
+                                };
+                            }
+                            
+                            groups.push(groupObj);
+                        }
+                    });
+                    
+                    // Display results
+                    displayMatches(matches);
+                    displayGroups(groups);
+                    displayHighlighted(highlightedText);
+                    
+                    // Show success status
+                    const matchCount = matches.length;
+                    showStatus(
+                        matchCount === 0 ? 'No matches found' : 
+                        `Found ${matchCount} ${matchCount === 1 ? 'match' : 'matches'}`,
+                        matchCount > 0 ? 'success' : 'error'
+                    );
+                } catch (err) {
+                    showStatus(`Regex Error: ${err.message}`, 'error');
+                    clearResults();
+                }
+            }
+
+            // Highlight matches in the text
+            function highlightMatches(text, matches) {
+                if (matches.length === 0) return text;
+                
+                // Sort matches by index in reverse order to avoid offset issues
+                const sortedMatches = [...matches].sort((a, b) => b.index - a.index);
+                let result = text;
+                
+                for (const match of sortedMatches) {
+                    const start = match.index;
+                    const end = start + match[0].length;
+                    const matchedText = match[0];
+                    
+                    result = result.substring(0, start) + 
+                            `<span class="match-highlight">${matchedText}</span>` + 
+                            result.substring(end);
+                }
+                
+                return result;
+            }
+
+            // Display matches
+            function displayMatches(matches) {
+                const matchesEl = document.getElementById('matches');
+                
+                if (matches.length === 0) {
+                    matchesEl.textContent = 'No matches found';
+                    return;
+                }
+                
+                let output = '';
+                matches.forEach((match, i) => {
+                    output += `Match ${i + 1}:\n`;
+                    output += `• Full match: "${match[0]}"\n`;
+                    output += `• Index: ${match.index}\n`;
+                    
+                    if (match.length > 1) {
+                        output += `• Groups:\n`;
+                        for (let j = 1; j < match.length; j++) {
+                            output += `  ${j}. "${match[j]}"\n`;
+                        }
+                    }
+                    
+                    output += '\n';
+                });
+                
+                matchesEl.textContent = output;
+            }
+
+            // Display groups
+            function displayGroups(groups) {
+                const groupsEl = document.getElementById('groups');
+                
+                if (groups.length === 0) {
+                    groupsEl.textContent = 'No named or numbered groups found';
+                    return;
+                }
+                
+                let output = '';
+                groups.forEach((group, i) => {
+                    output += `Match ${i + 1}:\n`;
+                    output += `• Full match: "${group.match}"\n`;
+                    output += `• Index: ${group.index}\n`;
+                    
+                    if (Object.keys(group.groups).length > 0) {
+                        output += `• Groups:\n`;
+                        for (const [name, data] of Object.entries(group.groups)) {
+                            output += `  ${name}: "${data.value}"`;
+                            if (data.index !== null) {
+                                output += ` (index: ${data.index})`;
+                            }
+                            output += '\n';
+                        }
+                    }
+                    
+                    output += '\n';
+                });
+                
+                groupsEl.textContent = output;
+            }
+
+            // Display highlighted text
+            function displayHighlighted(highlightedText) {
+                const highlightEl = document.getElementById('highlight');
+                highlightEl.innerHTML = highlightedText || 'No matches to highlight';
+            }
+
+            // Clear all results
+            function clearResults() {
+                document.getElementById('matches').textContent = '';
+                document.getElementById('groups').textContent = '';
+                document.getElementById('highlight').innerHTML = '';
+            }
+
+            // Show status message
+            function showStatus(message, type) {
+                statusEl.textContent = message;
+                statusEl.className = 'status ' + type;
+            }
+
+            // Clear all inputs and results
+            function clearAll() {
+                regexInput.value = '';
+                testText.value = '';
+                statusEl.className = 'status';
+                statusEl.textContent = '';
+                clearResults();
+                
+                // Uncheck all flags
+                for (const el of Object.values(flagOptions)) {
+                    el.checked = false;
+                }
+            }
+
+            // Copy results to clipboard
+            function copyResults() {
+                const activeTab = document.querySelector('.tab.active');
+                const activeTabContent = document.getElementById(activeTab.dataset.tab);
+                
+                if (activeTabContent.textContent.trim() === '') {
+                    showStatus('No results to copy', 'error');
+                    return;
+                }
+                
+                // Create range to select text
+                const range = document.createRange();
+                range.selectNode(activeTabContent);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                
+                try {
+                    document.execCommand('copy');
+                    messageEl.style.display = 'block';
+                    setTimeout(() => {
+                        messageEl.style.display = 'none';
+                    }, 2000);
+                } catch (err) {
+                    showStatus('Failed to copy results', 'error');
+                }
+                
+                window.getSelection().removeAllRanges();
+            }
+
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and contents
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.remove('active'));
+                    
+                    // Add active class to clicked tab and corresponding content
+                    this.classList.add('active');
+                    const tabId = this.dataset.tab;
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+
+            // Event listeners
+            testBtn.addEventListener('click', testRegex);
+            clearBtn.addEventListener('click', clearAll);
+            copyBtn.addEventListener('click', copyResults);
+            
+            // Test on Enter key in regex input
+            regexInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    testRegex();
+                }
+            });
+            
+            // Optional: Live testing as user types
+            // testText.addEventListener('input', debounce(testRegex, 500));
+        });
+
+        // Utility function for debouncing
+        function debounce(func, delay) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), delay);
+            };
+        }
+    </script>
+</body>
+</html>

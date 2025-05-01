@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Generator | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-blue: #0077ff;
+            --light-blue: #e6f2ff;
+            --dark-blue: #0055cc;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #555;
+        }
+        
+        .tool-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .input-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .output-section {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            border-top: 4px solid var(--primary-blue);
+            height: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+        
+        .select-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            background-color: var(--white);
+            cursor: pointer;
+        }
+        
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .color-input {
+            width: 60px;
+            height: 40px;
+            padding: 3px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .barcode-container {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            border: 1px solid #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 150px;
+            width: 100%;
+            overflow: auto;
+        }
+        
+        .barcode-placeholder {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+        
+        .barcode-img {
+            max-width: 100%;
+            height: auto;
+            image-rendering: crisp-edges;
+        }
+        
+        .barcode-text {
+            text-align: center;
+            margin-top: 10px;
+            font-family: 'Libre Barcode 128', cursive;
+            font-size: 24px;
+        }
+        
+        .download-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .download-btn {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+            padding: 8px 15px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .download-btn:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .tool-container {
+                flex-direction: column;
+            }
+            
+            .input-section, .output-section {
+                width: 100%;
+            }
+            
+            .download-options {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .download-btn {
+                width: 100%;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Barcode+128&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Barcode Generator</h1>
+            <p class="header-description">
+                Create custom barcodes for products, inventory, or any identification needs. Supports multiple barcode formats.
+            </p>
+        </header>
+        
+        <div class="tool-container">
+            <div class="input-section">
+                <div class="card">
+                    <div class="form-group">
+                        <label for="barcode-content">Enter Numbers or Text</label>
+                        <input 
+                            type="text" 
+                            id="barcode-content" 
+                            class="input-field" 
+                            placeholder="Enter numbers or text to encode"
+                        >
+                        <div id="error-message" class="error-message"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="barcode-type">Barcode Type</label>
+                        <select id="barcode-type" class="select-field">
+                            <option value="CODE128">CODE128 (Alphanumeric)</option>
+                            <option value="EAN13">EAN-13 (Product codes)</option>
+                            <option value="UPC">UPC (Universal Product Code)</option>
+                            <option value="CODE39">CODE39 (Alphanumeric)</option>
+                            <option value="ITF14">ITF-14 (Shipping)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="barcode-size">Barcode Size</label>
+                        <select id="barcode-size" class="select-field">
+                            <option value="1">Small</option>
+                            <option value="2" selected>Medium</option>
+                            <option value="3">Large</option>
+                            <option value="4">Extra Large</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Barcode Color</label>
+                        <div class="color-picker">
+                            <input type="color" id="barcode-color" class="color-input" value="#000000">
+                            <span id="color-value">#000000</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="display-text">Display Text Below Barcode</label>
+                        <select id="display-text" class="select-field">
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
+                    </div>
+                    
+                    <button id="generate-btn" class="btn btn-block">Generate Barcode</button>
+                </div>
+            </div>
+            
+            <div class="output-section">
+                <div class="card">
+                    <h2 style="text-align: center; color: var(--primary-blue); margin-bottom: 20px;">Your Barcode</h2>
+                    
+                    <div class="barcode-container">
+                        <div id="barcode-placeholder" class="barcode-placeholder">
+                            <p>Your generated barcode will appear here</p>
+                        </div>
+                        <svg id="barcode-svg" style="display: none;"></svg>
+                    </div>
+                    
+                    <div id="barcode-text-display" class="barcode-text" style="display: none;"></div>
+                    
+                    <div class="download-options">
+                        <button id="download-svg" class="download-btn" disabled>Download SVG</button>
+                        <button id="download-png" class="download-btn" disabled>Download PNG</button>
+                        <button id="download-jpeg" class="download-btn" disabled>Download JPEG</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Barcode Library -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <!-- HTML to Canvas Library -->
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const barcodeContent = document.getElementById('barcode-content');
+            const barcodeType = document.getElementById('barcode-type');
+            const barcodeSize = document.getElementById('barcode-size');
+            const barcodeColor = document.getElementById('barcode-color');
+            const colorValue = document.getElementById('color-value');
+            const displayText = document.getElementById('display-text');
+            const generateBtn = document.getElementById('generate-btn');
+            const barcodePlaceholder = document.getElementById('barcode-placeholder');
+            const barcodeSvg = document.getElementById('barcode-svg');
+            const barcodeTextDisplay = document.getElementById('barcode-text-display');
+            const downloadSvg = document.getElementById('download-svg');
+            const downloadPng = document.getElementById('download-png');
+            const downloadJpeg = document.getElementById('download-jpeg');
+            const errorMessage = document.getElementById('error-message');
+            
+            // Current barcode data
+            let currentBarcode = null;
+            
+            // Update color value display
+            barcodeColor.addEventListener('input', function() {
+                colorValue.textContent = this.value;
+            });
+            
+            // Generate barcode
+            generateBtn.addEventListener('click', generateBarcode);
+            
+            // Generate on Enter key press
+            barcodeContent.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generateBarcode();
+                }
+            });
+            
+            // Generate barcode function
+            function generateBarcode() {
+                const content = barcodeContent.value.trim();
+                const type = barcodeType.value;
+                const size = parseInt(barcodeSize.value);
+                const color = barcodeColor.value;
+                const showText = displayText.value === 'true';
+                
+                // Validate input
+                if (!content) {
+                    errorMessage.textContent = 'Please enter some text or numbers';
+                    return;
+                }
+                
+                // Special validation for EAN13 (must be 12 or 13 digits)
+                if (type === 'EAN13' && !/^\d{12,13}$/.test(content)) {
+                    errorMessage.textContent = 'EAN-13 requires 12 or 13 digits';
+                    return;
+                }
+                
+                // Special validation for UPC (must be 11 or 12 digits)
+                if (type === 'UPC' && !/^\d{11,12}$/.test(content)) {
+                    errorMessage.textContent = 'UPC requires 11 or 12 digits';
+                    return;
+                }
+                
+                // Special validation for ITF14 (must be 13 or 14 digits)
+                if (type === 'ITF14' && !/^\d{13,14}$/.test(content)) {
+                    errorMessage.textContent = 'ITF-14 requires 13 or 14 digits';
+                    return;
+                }
+                
+                errorMessage.textContent = '';
+                
+                try {
+                    // Generate barcode
+                    JsBarcode(barcodeSvg, content, {
+                        format: type,
+                        width: size,
+                        height: 50 + (size * 10),
+                        displayValue: false, // We'll handle this separately
+                        lineColor: color,
+                        margin: 10,
+                        fontSize: 12 + (size * 2),
+                    });
+                    
+                    // Show the barcode
+                    barcodePlaceholder.style.display = 'none';
+                    barcodeSvg.style.display = 'block';
+                    
+                    // Handle text display
+                    if (showText) {
+                        barcodeTextDisplay.textContent = content;
+                        barcodeTextDisplay.style.display = 'block';
+                        barcodeTextDisplay.style.color = color;
+                    } else {
+                        barcodeTextDisplay.style.display = 'none';
+                    }
+                    
+                    // Store current barcode data
+                    currentBarcode = {
+                        content: content,
+                        type: type,
+                        size: size,
+                        color: color,
+                        showText: showText
+                    };
+                    
+                    // Enable download buttons
+                    enableDownloadButtons();
+                } catch (error) {
+                    errorMessage.textContent = 'Error generating barcode: ' + error.message;
+                    barcodePlaceholder.style.display = 'block';
+                    barcodeSvg.style.display = 'none';
+                    barcodeTextDisplay.style.display = 'none';
+                    disableDownloadButtons();
+                }
+            }
+            
+            // Enable download buttons
+            function enableDownloadButtons() {
+                downloadSvg.disabled = false;
+                downloadPng.disabled = false;
+                downloadJpeg.disabled = false;
+            }
+            
+            // Disable download buttons
+            function disableDownloadButtons() {
+                downloadSvg.disabled = true;
+                downloadPng.disabled = true;
+                downloadJpeg.disabled = true;
+            }
+            
+            // Download as SVG
+            downloadSvg.addEventListener('click', function() {
+                if (!currentBarcode) return;
+                
+                const serializer = new XMLSerializer();
+                const svgStr = serializer.serializeToString(barcodeSvg);
+                
+                // Add text if needed
+                let finalSvg = svgStr;
+                if (currentBarcode.showText) {
+                    const textElement = `<text x="50%" y="${barcodeSvg.height.baseVal.value + 20}" font-family="Arial" font-size="${12 + (currentBarcode.size * 2)}" fill="${currentBarcode.color}" text-anchor="middle">${currentBarcode.content}</text>`;
+                    finalSvg = svgStr.replace('</svg>', `${textElement}</svg>`);
+                }
+                
+                const blob = new Blob([finalSvg], {type: 'image/svg+xml'});
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.download = `barcode-${Date.now()}.svg`;
+                link.href = url;
+                link.click();
+                
+                URL.revokeObjectURL(url);
+            });
+            
+            // Download as PNG or JPEG
+            async function downloadRaster(format) {
+                if (!currentBarcode) return;
+                
+                // Create a container for the barcode and optional text
+                const container = document.createElement('div');
+                container.style.position = 'relative';
+                container.style.display = 'inline-block';
+                container.style.padding = '10px';
+                container.style.backgroundColor = 'white';
+                
+                // Clone the SVG
+                const svgClone = barcodeSvg.cloneNode(true);
+                container.appendChild(svgClone);
+                
+                // Add text if needed
+                if (currentBarcode.showText) {
+                    const textDiv = document.createElement('div');
+                    textDiv.textContent = currentBarcode.content;
+                    textDiv.style.textAlign = 'center';
+                    textDiv.style.marginTop = '10px';
+                    textDiv.style.fontFamily = 'Arial, sans-serif';
+                    textDiv.style.fontSize = `${12 + (currentBarcode.size * 2)}px`;
+                    textDiv.style.color = currentBarcode.color;
+                    container.appendChild(textDiv);
+                }
+                
+                // Temporarily add to document
+                document.body.appendChild(container);
+                
+                try {
+                    // Convert to canvas
+                    const canvas = await html2canvas(container, {
+                        backgroundColor: null,
+                        scale: 2, // Higher quality
+                        logging: false,
+                        useCORS: true,
+                        allowTaint: true
+                    });
+                    
+                    // Create download link
+                    const link = document.createElement('a');
+                    link.download = `barcode-${Date.now()}.${format}`;
+                    link.href = canvas.toDataURL(`image/${format}`, 0.9);
+                    link.click();
+                } catch (error) {
+                    errorMessage.textContent = 'Error generating image: ' + error.message;
+                } finally {
+                    // Clean up
+                    document.body.removeChild(container);
+                }
+            }
+            
+            // Set up PNG and JPEG download buttons
+            downloadPng.addEventListener('click', () => downloadRaster('png'));
+            downloadJpeg.addEventListener('click', () => downloadRaster('jpeg'));
+            
+            // Initialize with disabled download buttons
+            disableDownloadButtons();
+        });
+    </script>
+</body>
+</html>

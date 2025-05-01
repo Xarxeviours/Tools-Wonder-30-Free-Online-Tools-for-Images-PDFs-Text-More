@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UUID Generator | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-blue: #0077ff;
+            --light-blue: #e6f2ff;
+            --dark-blue: #0055cc;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #555;
+        }
+        
+        .tool-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border-top: 4px solid var(--primary-blue);
+            margin-bottom: 30px;
+        }
+        
+        .uuid-display {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            word-break: break-all;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .uuid-placeholder {
+            color: #777;
+            font-style: italic;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: none;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+        
+        .copied-message {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .copied-message.show {
+            opacity: 1;
+        }
+        
+        .options-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .option-group {
+            margin-bottom: 15px;
+        }
+        
+        .option-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+        
+        .option-checkbox {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-blue);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .uuid-display {
+                font-size: 0.9rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>UUID Generator</h1>
+            <p class="header-description">
+                Generate version 4 Universally Unique Identifiers (UUIDs) instantly. Perfect for development, testing, and unique identification needs.
+            </p>
+        </header>
+        
+        <div class="tool-card">
+            <div class="uuid-display" id="uuid-display">
+                <span class="uuid-placeholder" id="uuid-placeholder">Your generated UUID will appear here</span>
+                <span id="uuid-value" style="display: none;"></span>
+                <button class="copy-btn" id="copy-btn">Copy</button>
+                <span class="copied-message" id="copied-message">Copied to clipboard!</span>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="generate-btn">Generate UUID</button>
+                <button class="btn btn-secondary" id="clear-btn">Clear</button>
+            </div>
+            
+            <div class="options-section">
+                <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Options</h3>
+                
+                <div class="option-group">
+                    <label class="option-label">
+                        <input type="checkbox" class="option-checkbox" id="auto-copy" checked>
+                        Auto-copy to clipboard
+                    </label>
+                </div>
+                
+                <div class="option-group">
+                    <label class="option-label">
+                        <input type="checkbox" class="option-checkbox" id="uppercase">
+                        Generate uppercase UUID
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uuidDisplay = document.getElementById('uuid-display');
+            const uuidPlaceholder = document.getElementById('uuid-placeholder');
+            const uuidValue = document.getElementById('uuid-value');
+            const generateBtn = document.getElementById('generate-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const copiedMessage = document.getElementById('copied-message');
+            const autoCopyCheckbox = document.getElementById('auto-copy');
+            const uppercaseCheckbox = document.getElementById('uppercase');
+            
+            // Generate a UUID v4
+            function generateUUID() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0;
+                    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+            
+            // Generate and display UUID
+            function generateAndDisplayUUID() {
+                let uuid = generateUUID();
+                
+                if (uppercaseCheckbox.checked) {
+                    uuid = uuid.toUpperCase();
+                }
+                
+                uuidPlaceholder.style.display = 'none';
+                uuidValue.style.display = 'inline';
+                uuidValue.textContent = uuid;
+                copyBtn.style.display = 'block';
+                
+                if (autoCopyCheckbox.checked) {
+                    copyToClipboard(uuid);
+                }
+            }
+            
+            // Copy UUID to clipboard
+            function copyToClipboard(text) {
+                navigator.clipboard.writeText(text).then(function() {
+                    // Show copied message
+                    copiedMessage.classList.add('show');
+                    setTimeout(function() {
+                        copiedMessage.classList.remove('show');
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            }
+            
+            // Clear UUID display
+            function clearDisplay() {
+                uuidPlaceholder.style.display = 'inline';
+                uuidValue.style.display = 'none';
+                uuidValue.textContent = '';
+                copyBtn.style.display = 'none';
+            }
+            
+            // Event listeners
+            generateBtn.addEventListener('click', generateAndDisplayUUID);
+            
+            clearBtn.addEventListener('click', clearDisplay);
+            
+            copyBtn.addEventListener('click', function() {
+                copyToClipboard(uuidValue.textContent);
+            });
+            
+            uuidDisplay.addEventListener('click', function() {
+                if (uuidValue.textContent) {
+                    copyToClipboard(uuidValue.textContent);
+                }
+            });
+            
+            // Generate a UUID on page load
+            generateAndDisplayUUID();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meta Tag Analyzer | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-blue: #0077ff;
+            --light-blue: #e6f2ff;
+            --dark-blue: #0055cc;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --border-radius: 8px;
+            --success-green: #2ecc71;
+            --warning-orange: #f39c12;
+            --error-red: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #555;
+        }
+        
+        .tool-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border-top: 4px solid var(--primary-blue);
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            color: var(--primary-blue);
+        }
+        
+        .spinner {
+            border: 4px solid var(--light-blue);
+            border-top: 4px solid var(--primary-blue);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .results-title {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .results-summary {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .meta-tag-card {
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-blue);
+        }
+        
+        .meta-tag-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .meta-tag-name {
+            font-weight: 600;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+        
+        .meta-tag-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .status-success {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success-green);
+        }
+        
+        .status-warning {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-orange);
+        }
+        
+        .status-error {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--error-red);
+        }
+        
+        .meta-tag-content {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            border: 1px solid #eee;
+        }
+        
+        .meta-tag-details {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .detail-label {
+            color: #666;
+        }
+        
+        .detail-value {
+            font-weight: 600;
+        }
+        
+        .suggestions {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .suggestion-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--primary-blue);
+        }
+        
+        .suggestion-list {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        
+        .suggestion-list li {
+            margin-bottom: 5px;
+        }
+        
+        .view-source {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .source-btn {
+            background: none;
+            border: none;
+            color: var(--primary-blue);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        .source-code {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: var(--border-radius);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        
+        .error-message {
+            color: var(--error-red);
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .meta-tag-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .meta-tag-details {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Meta Tag Analyzer</h1>
+            <p class="header-description">
+                Analyze the meta tags of any webpage to improve SEO performance. Get detailed insights and optimization suggestions.
+            </p>
+        </header>
+        
+        <div class="tool-card">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="url-input">Enter Website URL</label>
+                    <input type="url" id="url-input" class="input-field" placeholder="https://example.com">
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="analyze-btn">Analyze Meta Tags</button>
+                <button class="btn btn-secondary" id="clear-btn">Clear</button>
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing webpage meta tags...</p>
+            </div>
+            
+            <div class="error-message" id="error-message"></div>
+            
+            <div class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <div class="results-title">Meta Tag Analysis Results</div>
+                    <div class="results-summary" id="results-summary"></div>
+                </div>
+                
+                <div id="meta-tags-container">
+                    <!-- Meta tag cards will be inserted here -->
+                </div>
+                
+                <div class="view-source">
+                    <button class="source-btn" id="view-source-btn">View Full Meta Tags Source</button>
+                    <div class="source-code" id="source-code"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const urlInput = document.getElementById('url-input');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('error-message');
+            const resultsSection = document.getElementById('results-section');
+            const resultsSummary = document.getElementById('results-summary');
+            const metaTagsContainer = document.getElementById('meta-tags-container');
+            const viewSourceBtn = document.getElementById('view-source-btn');
+            const sourceCode = document.getElementById('source-code');
+            
+            // SEO best practices
+            const seoGuidelines = {
+                title: {
+                    minLength: 30,
+                    maxLength: 60,
+                    idealLength: 50
+                },
+                description: {
+                    minLength: 70,
+                    maxLength: 160,
+                    idealLength: 120
+                },
+                keywords: {
+                    maxCount: 20
+                },
+                viewport: {
+                    required: true
+                },
+                charset: {
+                    required: true
+                },
+                robots: {
+                    recommended: true
+                },
+                ogTags: {
+                    recommended: true
+                }
+            };
+            
+            // Analyze meta tags
+            async function analyzeMetaTags() {
+                const url = urlInput.value.trim();
+                
+                if (!url) {
+                    showError('Please enter a valid URL');
+                    return;
+                }
+                
+                // Validate URL format
+                try {
+                    new URL(url);
+                } catch (e) {
+                    showError('Please enter a valid URL including http:// or https://');
+                    return;
+                }
+                
+                // Show loading state
+                loading.style.display = 'block';
+                errorMessage.style.display = 'none';
+                resultsSection.style.display = 'none';
+                
+                try {
+                    // Use a proxy to avoid CORS issues
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                    const response = await fetch(proxyUrl);
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch the webpage');
+                    }
+                    
+                    const data = await response.json();
+                    const html = data.contents;
+                    
+                    if (!html) {
+                        throw new Error('No content received from the webpage');
+                    }
+                    
+                    // Parse the HTML
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Extract meta tags
+                    const metaTags = doc.querySelectorAll('meta');
+                    const titleTag = doc.querySelector('title');
+                    const metaData = [];
+                    let metaTagsSource = '';
+                    
+                    // Add title tag if exists
+                    if (titleTag) {
+                        const titleData = {
+                            name: 'title',
+                            content: titleTag.textContent,
+                            tag: titleTag.outerHTML
+                        };
+                        metaData.push(titleData);
+                        metaTagsSource += titleTag.outerHTML + '\n';
+                    }
+                    
+                    // Process all meta tags
+                    metaTags.forEach(tag => {
+                        const name = tag.getAttribute('name') || 
+                                    tag.getAttribute('property') || 
+                                    tag.getAttribute('http-equiv') || 
+                                    'unknown';
+                        
+                        const content = tag.getAttribute('content') || '';
+                        const metaObj = {
+                            name: name.toLowerCase(),
+                            content: content,
+                            tag: tag.outerHTML
+                        };
+                        
+                        metaData.push(metaObj);
+                        metaTagsSource += tag.outerHTML + '\n';
+                    });
+                    
+                    // Display results
+                    displayResults(metaData, metaTagsSource);
+                    
+                } catch (error) {
+                    console.error('Error analyzing meta tags:', error);
+                    showError(`Error: ${error.message}. Please check the URL and try again.`);
+                } finally {
+                    loading.style.display = 'none';
+                }
+            }
+            
+            // Display results
+            function displayResults(metaData, metaTagsSource) {
+                // Clear previous results
+                metaTagsContainer.innerHTML = '';
+                sourceCode.textContent = metaTagsSource;
+                
+                // Count different types of meta tags
+                const tagCounts = {
+                    title: 0,
+                    description: 0,
+                    keywords: 0,
+                    viewport: 0,
+                    charset: 0,
+                    robots: 0,
+                    ogTags: 0,
+                    other: 0
+                };
+                
+                // Process each meta tag
+                metaData.forEach(tag => {
+                    let tagType = 'other';
+                    
+                    if (tag.name === 'title') {
+                        tagType = 'title';
+                        tagCounts.title++;
+                    } else if (tag.name.includes('description')) {
+                        tagType = 'description';
+                        tagCounts.description++;
+                    } else if (tag.name.includes('keywords')) {
+                        tagType = 'keywords';
+                        tagCounts.keywords++;
+                    } else if (tag.name.includes('viewport')) {
+                        tagType = 'viewport';
+                        tagCounts.viewport++;
+                    } else if (tag.name.includes('charset')) {
+                        tagType = 'charset';
+                        tagCounts.charset++;
+                    } else if (tag.name.includes('robots')) {
+                        tagType = 'robots';
+                        tagCounts.robots++;
+                    } else if (tag.name.startsWith('og:')) {
+                        tagType = 'ogTags';
+                        tagCounts.ogTags++;
+                    } else {
+                        tagType = 'other';
+                        tagCounts.other++;
+                    }
+                    
+                    // Create meta tag card
+                    const card = createMetaTagCard(tag, tagType);
+                    metaTagsContainer.appendChild(card);
+                });
+                
+                // Update summary
+                const summaryText = [
+                    `${tagCounts.title} title tag`,
+                    `${tagCounts.description} description tag(s)`,
+                    `${tagCounts.keywords} keywords tag(s)`,
+                    `${tagCounts.viewport} viewport tag(s)`,
+                    `${tagCounts.robots} robots tag(s)`,
+                    `${tagCounts.ogTags} Open Graph tag(s)`
+                ].join(' • ');
+                
+                resultsSummary.textContent = summaryText;
+                resultsSection.style.display = 'block';
+            }
+            
+            // Create meta tag card
+            function createMetaTagCard(tag, tagType) {
+                const card = document.createElement('div');
+                card.className = 'meta-tag-card';
+                
+                // Determine status and suggestions
+                const { status, statusText, suggestions } = analyzeTag(tag, tagType);
+                
+                // Create header with status
+                const header = document.createElement('div');
+                header.className = 'meta-tag-header';
+                header.innerHTML = `
+                    <div class="meta-tag-name">${tag.name}</div>
+                    <div class="meta-tag-status status-${status}">${statusText}</div>
+                `;
+                
+                // Create content section
+                const content = document.createElement('div');
+                content.className = 'meta-tag-content';
+                content.textContent = tag.content || 'No content specified';
+                
+                // Create details section
+                const details = document.createElement('div');
+                details.className = 'meta-tag-details';
+                
+                // Add length for text-based tags
+                if (tag.content && ['title', 'description', 'keywords'].includes(tagType)) {
+                    const lengthItem = document.createElement('div');
+                    lengthItem.className = 'detail-item';
+                    lengthItem.innerHTML = `
+                        <span class="detail-label">Length:</span>
+                        <span class="detail-value">${tag.content.length} characters</span>
+                    `;
+                    details.appendChild(lengthItem);
+                }
+                
+                // Add suggestions if any
+                if (suggestions.length > 0) {
+                    const suggestionsDiv = document.createElement('div');
+                    suggestionsDiv.className = 'suggestions';
+                    
+                    const title = document.createElement('div');
+                    title.className = 'suggestion-title';
+                    title.textContent = 'Optimization Suggestions:';
+                    
+                    const list = document.createElement('ul');
+                    list.className = 'suggestion-list';
+                    
+                    suggestions.forEach(suggestion => {
+                        const li = document.createElement('li');
+                        li.textContent = suggestion;
+                        list.appendChild(li);
+                    });
+                    
+                    suggestionsDiv.appendChild(title);
+                    suggestionsDiv.appendChild(list);
+                    
+                    // Append all elements to card
+                    card.appendChild(header);
+                    card.appendChild(content);
+                    card.appendChild(details);
+                    card.appendChild(suggestionsDiv);
+                } else {
+                    // Append elements without suggestions
+                    card.appendChild(header);
+                    card.appendChild(content);
+                    card.appendChild(details);
+                }
+                
+                return card;
+            }
+            
+            // Analyze tag against SEO best practices
+            function analyzeTag(tag, tagType) {
+                const result = {
+                    status: 'success',
+                    statusText: 'Good',
+                    suggestions: []
+                };
+                
+                switch (tagType) {
+                    case 'title':
+                        if (!tag.content) {
+                            result.status = 'error';
+                            result.statusText = 'Missing';
+                            result.suggestions.push('Add a title tag - this is critical for SEO');
+                        } else if (tag.content.length < seoGuidelines.title.minLength) {
+                            result.status = 'warning';
+                            result.statusText = 'Too short';
+                            result.suggestions.push(`Consider making the title longer (${seoGuidelines.title.minLength}-${seoGuidelines.title.maxLength} characters recommended)`);
+                        } else if (tag.content.length > seoGuidelines.title.maxLength) {
+                            result.status = 'warning';
+                            result.statusText = 'Too long';
+                            result.suggestions.push(`Consider shortening the title (${seoGuidelines.title.minLength}-${seoGuidelines.title.maxLength} characters recommended)`);
+                        }
+                        break;
+                        
+                    case 'description':
+                        if (!tag.content) {
+                            result.status = 'error';
+                            result.statusText = 'Missing';
+                            result.suggestions.push('Add a meta description - this appears in search results');
+                        } else if (tag.content.length < seoGuidelines.description.minLength) {
+                            result.status = 'warning';
+                            result.statusText = 'Too short';
+                            result.suggestions.push(`Consider making the description longer (${seoGuidelines.description.minLength}-${seoGuidelines.description.maxLength} characters recommended)`);
+                        } else if (tag.content.length > seoGuidelines.description.maxLength) {
+                            result.status = 'warning';
+                            result.statusText = 'Too long';
+                            result.suggestions.push(`Consider shortening the description (${seoGuidelines.description.minLength}-${seoGuidelines.description.maxLength} characters recommended)`);
+                        }
+                        break;
+                        
+                    case 'keywords':
+                        if (!tag.content) {
+                            result.status = 'error';
+                            result.statusText = 'Missing';
+                            result.suggestions.push('Consider adding relevant keywords (though less important than it used to be)');
+                        } else {
+                            const keywordCount = tag.content.split(',').length;
+                            if (keywordCount > seoGuidelines.keywords.maxCount) {
+                                result.status = 'warning';
+                                result.statusText = 'Too many keywords';
+                                result.suggestions.push(`Consider reducing the number of keywords (${seoGuidelines.keywords.maxCount} or fewer recommended)`);
+                            }
+                        }
+                        break;
+                        
+                    case 'viewport':
+                        if (!tag.content) {
+                            result.status = 'error';
+                            result.statusText = 'Missing';
+                            result.suggestions.push('Add a viewport meta tag - this is essential for mobile responsiveness');
+                        } else if (!tag.content.includes('width=device-width')) {
+                            result.status = 'warning';
+                            result.statusText = 'Needs improvement';
+                            result.suggestions.push('Consider adding "width=device-width, initial-scale=1" to the viewport tag');
+                        }
+                        break;
+                        
+                    case 'charset':
+                        if (!tag.content) {
+                            result.status = 'error';
+                            result.statusText = 'Missing';
+                            result.suggestions.push('Add a charset meta tag (recommend UTF-8)');
+                        } else if (!tag.content.toLowerCase().includes('utf-8')) {
+                            result.status = 'warning';
+                            result.statusText = 'Non-standard';
+                            result.suggestions.push('Consider using UTF-8 charset for better compatibility');
+                        }
+                        break;
+                        
+                    case 'robots':
+                        if (!tag.content) {
+                            result.status = 'warning';
+                            result.statusText = 'Generic';
+                            result.suggestions.push('Consider specifying indexing instructions (index,follow or noindex,nofollow)');
+                        }
+                        break;
+                        
+                    case 'ogTags':
+                        if (tag.name === 'og:title' && !tag.content) {
+                            result.status = 'error';
+                            result.statusText = 'Missing';
+                            result.suggestions.push('Add Open Graph title for better social media sharing');
+                        } else if (tag.name === 'og:description' && !tag.content) {
+                            result.status = 'error';
+                            result.statusText = 'Missing';
+                            result.suggestions.push('Add Open Graph description for better social media sharing');
+                        } else if (tag.name === 'og:image' && !tag.content) {
+                            result.status = 'error';
+                            result.statusText = 'Missing';
+                            result.suggestions.push('Add Open Graph image for better social media sharing');
+                        }
+                        break;
+                        
+                    default:
+                        result.status = 'success';
+                        result.statusText = 'Found';
+                }
+                
+                return result;
+            }
+            
+            // Show error message
+            function showError(message) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+                loading.style.display = 'none';
+                resultsSection.style.display = 'none';
+            }
+            
+            // Clear all inputs and results
+            function clearAll() {
+                urlInput.value = '';
+                errorMessage.style.display = 'none';
+                resultsSection.style.display = 'none';
+                sourceCode.style.display = 'none';
+            }
+            
+            // Toggle source code visibility
+            function toggleSourceCode() {
+                if (sourceCode.style.display === 'block') {
+                    sourceCode.style.display = 'none';
+                    viewSourceBtn.textContent = 'View Full Meta Tags Source';
+                } else {
+                    sourceCode.style.display = 'block';
+                    viewSourceBtn.textContent = 'Hide Source';
+                }
+            }
+            
+            // Event listeners
+            analyzeBtn.addEventListener('click', analyzeMetaTags);
+            clearBtn.addEventListener('click', clearAll);
+            viewSourceBtn.addEventListener('click', toggleSourceCode);
+            
+            // Also analyze when pressing Enter in the URL field
+            urlInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    analyzeMetaTags();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

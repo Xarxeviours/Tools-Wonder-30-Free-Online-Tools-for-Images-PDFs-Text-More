@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Minifier | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-color: #202124;
+            --bg-color: #ffffff;
+            --border-color: #dadce0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --success-color: #34a853;
+            --error-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .tool-card {
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+
+        .code-columns {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 992px) {
+            .code-columns {
+                flex-direction: row;
+            }
+        }
+
+        .code-container {
+            flex: 1;
+        }
+
+        .code-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        label {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .char-count {
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            min-height: 300px;
+            resize: vertical;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d5bba;
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #c5c5c5;
+        }
+
+        .message {
+            color: var(--primary-color);
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .status.success {
+            background-color: rgba(52, 168, 83, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status.error {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+        }
+
+        .language-selector {
+            margin-bottom: 15px;
+        }
+
+        .language-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .language-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .language-tab.active {
+            border-bottom-color: var(--primary-color);
+            font-weight: 500;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 480px) {
+            .buttons button {
+                flex: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Code Minifier</h1>
+        
+        <div class="tool-card">
+            <div class="language-selector">
+                <div class="language-tabs">
+                    <div class="language-tab active" data-lang="html">HTML</div>
+                    <div class="language-tab" data-lang="css">CSS</div>
+                    <div class="language-tab" data-lang="js">JavaScript</div>
+                </div>
+            </div>
+            
+            <div class="code-columns">
+                <div class="code-container">
+                    <div class="code-header">
+                        <label for="input-code">Original Code</label>
+                        <span class="char-count" id="input-count">0 characters</span>
+                    </div>
+                    <textarea id="input-code" placeholder="Paste your code here..." autofocus></textarea>
+                </div>
+                
+                <div class="code-container">
+                    <div class="code-header">
+                        <label for="output-code">Minified Code</label>
+                        <span class="char-count" id="output-count">0 characters</span>
+                    </div>
+                    <textarea id="output-code" placeholder="Minified code will appear here" readonly></textarea>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button id="minify-btn" class="btn-primary">Minify</button>
+                <button id="copy-btn" class="btn-secondary">Copy Output</button>
+                <button id="clear-btn" class="btn-secondary">Clear All</button>
+            </div>
+            
+            <div id="status" class="status"></div>
+            <div id="message" class="message">Minified code copied to clipboard!</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const inputCode = document.getElementById('input-code');
+            const outputCode = document.getElementById('output-code');
+            const minifyBtn = document.getElementById('minify-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const statusEl = document.getElementById('status');
+            const messageEl = document.getElementById('message');
+            const inputCount = document.getElementById('input-count');
+            const outputCount = document.getElementById('output-count');
+            const languageTabs = document.querySelectorAll('.language-tab');
+            
+            let currentLanguage = 'html';
+
+            // Minify code based on selected language
+            function minifyCode() {
+                const code = inputCode.value.trim();
+                
+                if (!code) {
+                    showStatus('Please enter some code to minify', 'error');
+                    return;
+                }
+                
+                try {
+                    let minified;
+                    const startTime = performance.now();
+                    
+                    switch(currentLanguage) {
+                        case 'html':
+                            minified = minifyHTML(code);
+                            break;
+                        case 'css':
+                            minified = minifyCSS(code);
+                            break;
+                        case 'js':
+                            minified = minifyJS(code);
+                            break;
+                    }
+                    
+                    const endTime = performance.now();
+                    const timeTaken = (endTime - startTime).toFixed(2);
+                    
+                    outputCode.value = minified;
+                    updateCharCounts();
+                    
+                    const reduction = Math.round(100 - (minified.length / code.length * 100));
+                    showStatus(
+                        `Minified successfully in ${timeTaken}ms (${reduction}% size reduction)`, 
+                        'success'
+                    );
+                } catch (err) {
+                    showStatus(`Error during minification: ${err.message}`, 'error');
+                }
+            }
+
+            // Minify HTML
+            function minifyHTML(html) {
+                // Remove comments
+                html = html.replace(/<!--[\s\S]*?-->/g, '');
+                
+                // Remove whitespace between tags
+                html = html.replace(/>\s+</g, '><');
+                
+                // Remove whitespace at start/end
+                html = html.trim();
+                
+                return html;
+            }
+
+            // Minify CSS
+            function minifyCSS(css) {
+                // Remove comments
+                css = css.replace(/\/\*[\s\S]*?\*\//g, '');
+                
+                // Remove whitespace
+                css = css.replace(/\s+/g, ' ');
+                
+                // Remove space around brackets and colons
+                css = css.replace(/\s*([{}:;,])\s*/g, '$1');
+                
+                // Remove last semicolon before }
+                css = css.replace(/;}/g, '}');
+                
+                // Remove whitespace at start/end
+                css = css.trim();
+                
+                return css;
+            }
+
+            // Minify JavaScript
+            function minifyJS(js) {
+                // Remove single-line comments
+                js = js.replace(/\/\/.*$/gm, '');
+                
+                // Remove multi-line comments
+                js = js.replace(/\/\*[\s\S]*?\*\//g, '');
+                
+                // Remove whitespace
+                js = js.replace(/\s+/g, ' ');
+                
+                // Remove space around operators
+                js = js.replace(/\s*([=+\-*\/%&|^~<>!]?=)\s*/g, '$1');
+                
+                // Remove whitespace at start/end
+                js = js.trim();
+                
+                return js;
+            }
+
+            // Update character counts
+            function updateCharCounts() {
+                inputCount.textContent = `${inputCode.value.length} characters`;
+                outputCount.textContent = `${outputCode.value.length} characters`;
+            }
+
+            // Show status message
+            function showStatus(message, type) {
+                statusEl.textContent = message;
+                statusEl.className = 'status ' + type;
+            }
+
+            // Copy output to clipboard
+            function copyOutput() {
+                if (outputCode.value.trim() === '') {
+                    showStatus('No output to copy', 'error');
+                    return;
+                }
+                
+                outputCode.select();
+                document.execCommand('copy');
+                
+                // Show message
+                messageEl.style.display = 'block';
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 2000);
+            }
+
+            // Clear all inputs and outputs
+            function clearAll() {
+                inputCode.value = '';
+                outputCode.value = '';
+                statusEl.className = 'status';
+                statusEl.textContent = '';
+                inputCount.textContent = '0 characters';
+                outputCount.textContent = '0 characters';
+                inputCode.focus();
+            }
+
+            // Handle language tab switching
+            function switchLanguage(lang) {
+                currentLanguage = lang;
+                
+                // Update active tab
+                languageTabs.forEach(tab => {
+                    tab.classList.toggle('active', tab.dataset.lang === lang);
+                });
+                
+                // Update placeholders
+                inputCode.placeholder = `Paste your ${lang.toUpperCase()} code here...`;
+                outputCode.placeholder = `Minified ${lang.toUpperCase()} will appear here`;
+                
+                // Clear previous output
+                outputCode.value = '';
+                outputCount.textContent = '0 characters';
+            }
+
+            // Event listeners
+            minifyBtn.addEventListener('click', minifyCode);
+            copyBtn.addEventListener('click', copyOutput);
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Language tab switching
+            languageTabs.forEach(tab => {
+                tab.addEventListener('click', () => switchLanguage(tab.dataset.lang));
+            });
+            
+            // Update character count as user types
+            inputCode.addEventListener('input', updateCharCounts);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    minifyCode();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

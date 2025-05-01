@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Formatter | Tool Wonder</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-color: #202124;
+            --bg-color: #ffffff;
+            --border-color: #dadce0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --success-color: #34a853;
+            --error-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .tool-card {
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            min-height: 200px;
+            resize: vertical;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d5bba;
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #c5c5c5;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+        }
+
+        .status.success {
+            background-color: rgba(52, 168, 83, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status.error {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+
+        .message {
+            color: var(--primary-color);
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .options {
+            display: flex;
+            gap: 15px;
+            margin: 10px 0 20px;
+            flex-wrap: wrap;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .option input {
+            width: auto;
+        }
+
+        @media (max-width: 768px) {
+            .buttons button {
+                flex: 100%;
+            }
+            
+            .option {
+                flex: 1 0 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>JSON Formatter & Validator</h1>
+        
+        <div class="tool-card">
+            <div class="input-group">
+                <label for="json-input">JSON Input</label>
+                <textarea id="json-input" placeholder='Paste your JSON here (e.g., {"name":"John","age":30})' autofocus></textarea>
+            </div>
+            
+            <div class="options">
+                <div class="option">
+                    <input type="radio" id="indent-2" name="indent" value="2" checked>
+                    <label for="indent-2">2 spaces</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="indent-4" name="indent" value="4">
+                    <label for="indent-4">4 spaces</label>
+                </div>
+                <div class="option">
+                    <input type="radio" id="indent-tab" name="indent" value="tab">
+                    <label for="indent-tab">Tabs</label>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button id="format-btn" class="btn-primary">Format</button>
+                <button id="validate-btn" class="btn-primary">Validate</button>
+                <button id="minify-btn" class="btn-secondary">Minify</button>
+            </div>
+            
+            <div class="input-group">
+                <label for="json-output">Formatted JSON</label>
+                <textarea id="json-output" placeholder="Formatted JSON will appear here" readonly></textarea>
+            </div>
+            
+            <div id="status" class="status"></div>
+            
+            <div class="buttons">
+                <button id="copy-btn" class="btn-secondary">Copy Output</button>
+                <button id="clear-btn" class="btn-secondary">Clear All</button>
+            </div>
+            
+            <div id="message" class="message">JSON copied to clipboard!</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const jsonInput = document.getElementById('json-input');
+            const jsonOutput = document.getElementById('json-output');
+            const formatBtn = document.getElementById('format-btn');
+            const validateBtn = document.getElementById('validate-btn');
+            const minifyBtn = document.getElementById('minify-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const statusEl = document.getElementById('status');
+            const messageEl = document.getElementById('message');
+            const indentOptions = document.getElementsByName('indent');
+
+            // Format JSON with proper indentation
+            function formatJSON() {
+                try {
+                    const jsonObj = JSON.parse(jsonInput.value);
+                    let indent;
+                    const selectedIndent = document.querySelector('input[name="indent"]:checked').value;
+                    
+                    if (selectedIndent === 'tab') {
+                        indent = '\t';
+                    } else {
+                        indent = parseInt(selectedIndent);
+                    }
+                    
+                    const formatted = JSON.stringify(jsonObj, null, indent);
+                    jsonOutput.value = formatted;
+                    showStatus('JSON is valid and formatted', 'success');
+                } catch (err) {
+                    showError(err);
+                }
+            }
+
+            // Validate JSON without formatting
+            function validateJSON() {
+                try {
+                    JSON.parse(jsonInput.value);
+                    jsonOutput.value = 'JSON is valid';
+                    showStatus('JSON is valid', 'success');
+                } catch (err) {
+                    showError(err);
+                }
+            }
+
+            // Minify JSON (remove all whitespace)
+            function minifyJSON() {
+                try {
+                    const jsonObj = JSON.parse(jsonInput.value);
+                    const minified = JSON.stringify(jsonObj);
+                    jsonOutput.value = minified;
+                    showStatus('JSON successfully minified', 'success');
+                } catch (err) {
+                    showError(err);
+                }
+            }
+
+            // Show error message
+            function showError(err) {
+                let errorMessage = `Invalid JSON: ${err.message}`;
+                
+                // Try to extract line number from error message
+                const lineMatch = err.message.match(/at position (\d+)/);
+                if (lineMatch) {
+                    const position = parseInt(lineMatch[1]);
+                    const lines = jsonInput.value.substr(0, position).split('\n');
+                    const lineNumber = lines.length;
+                    const column = lines[lines.length - 1].length;
+                    
+                    errorMessage += `\n\nError at line ${lineNumber}, column ${column}`;
+                    
+                    // Show problematic line if possible
+                    if (lines.length > 0) {
+                        errorMessage += `\nProblem area: ${lines[lines.length - 1].substr(column - 20, 40)}`;
+                    }
+                }
+                
+                jsonOutput.value = '';
+                showStatus(errorMessage, 'error');
+            }
+
+            // Show status message
+            function showStatus(message, type) {
+                statusEl.textContent = message;
+                statusEl.className = 'status ' + type;
+            }
+
+            // Copy output to clipboard
+            function copyOutput() {
+                if (jsonOutput.value.trim() === '') {
+                    showStatus('No output to copy', 'error');
+                    return;
+                }
+                
+                jsonOutput.select();
+                document.execCommand('copy');
+                
+                // Show message
+                messageEl.style.display = 'block';
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 2000);
+            }
+
+            // Clear all inputs and outputs
+            function clearAll() {
+                jsonInput.value = '';
+                jsonOutput.value = '';
+                statusEl.className = 'status';
+                statusEl.textContent = '';
+                jsonInput.focus();
+            }
+
+            // Event listeners
+            formatBtn.addEventListener('click', formatJSON);
+            validateBtn.addEventListener('click', validateJSON);
+            minifyBtn.addEventListener('click', minifyJSON);
+            copyBtn.addEventListener('click', copyOutput);
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    formatJSON();
+                }
+            });
+
+            // Optional: Auto-format when valid JSON is detected
+            jsonInput.addEventListener('input', debounce(function() {
+                try {
+                    JSON.parse(jsonInput.value);
+                    formatJSON();
+                } catch (err) {
+                    // Don't auto-format invalid JSON
+                }
+            }, 1000));
+
+            // Debounce function for input events
+            function debounce(func, delay) {
+                let timeout;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), delay);
+                };
+            }
+        });
+    </script>
+</body>
+</html>

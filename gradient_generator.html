@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Converter | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-color: #202124;
+            --bg-color: #ffffff;
+            --border-color: #dadce0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .tool-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .tool-container {
+                flex-direction: row;
+            }
+        }
+
+        .controls {
+            flex: 1;
+            padding: 20px;
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+
+        .preview {
+            flex: 1;
+            min-height: 300px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .gradient-display {
+            flex: 1;
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+        }
+
+        .css-output {
+            padding: 15px;
+            background-color: var(--primary-light);
+            border-radius: 0 0 8px 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .color-inputs {
+            margin-top: 20px;
+        }
+
+        .color-stop {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .color-preview {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .color-value {
+            flex: 1;
+        }
+
+        .stop-position {
+            width: 60px;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d5bba;
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #c5c5c5;
+        }
+
+        .add-color {
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .remove-color {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .remove-color:hover {
+            background-color: #d32f2f;
+        }
+
+        .copy-message {
+            color: var(--primary-color);
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gradient Converter</h1>
+        
+        <div class="tool-container">
+            <div class="controls">
+                <div class="form-group">
+                    <label for="gradient-type">Gradient Type</label>
+                    <select id="gradient-type">
+                        <option value="linear">Linear</option>
+                        <option value="radial">Radial</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="direction-group">
+                    <label for="gradient-direction">Direction</label>
+                    <select id="gradient-direction">
+                        <option value="to right">Left to Right</option>
+                        <option value="to left">Right to Left</option>
+                        <option value="to bottom">Top to Bottom</option>
+                        <option value="to top">Bottom to Top</option>
+                        <option value="to right bottom">Diagonal (Top Left to Bottom Right)</option>
+                        <option value="to left bottom">Diagonal (Top Right to Bottom Left)</option>
+                        <option value="to right top">Diagonal (Bottom Left to Top Right)</option>
+                        <option value="to left top">Diagonal (Bottom Right to Top Left)</option>
+                        <option value="45deg">45deg</option>
+                        <option value="90deg">90deg</option>
+                        <option value="135deg">135deg</option>
+                        <option value="180deg">180deg</option>
+                        <option value="225deg">225deg</option>
+                        <option value="270deg">270deg</option>
+                        <option value="315deg">315deg</option>
+                    </select>
+                </div>
+                
+                <div class="color-inputs">
+                    <label>Color Stops</label>
+                    <div id="color-stops-container">
+                        <!-- Color stops will be added here dynamically -->
+                    </div>
+                    <button type="button" id="add-color" class="add-color btn-secondary">+ Add Color</button>
+                </div>
+                
+                <div class="buttons">
+                    <button type="button" id="copy-css" class="btn-primary">Copy CSS</button>
+                    <button type="button" id="clear-all" class="btn-secondary">Clear All</button>
+                    <button type="button" id="reset" class="btn-secondary">Reset</button>
+                </div>
+                <div id="copy-message" class="copy-message">CSS copied to clipboard!</div>
+            </div>
+            
+            <div class="preview">
+                <div class="gradient-display" id="gradient-preview"></div>
+                <div class="css-output" id="css-output">background: linear-gradient(to right, #1a73e8, #ffffff);</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const gradientType = document.getElementById('gradient-type');
+            const gradientDirection = document.getElementById('gradient-direction');
+            const colorStopsContainer = document.getElementById('color-stops-container');
+            const addColorBtn = document.getElementById('add-color');
+            const gradientPreview = document.getElementById('gradient-preview');
+            const cssOutput = document.getElementById('css-output');
+            const copyCssBtn = document.getElementById('copy-css');
+            const clearAllBtn = document.getElementById('clear-all');
+            const resetBtn = document.getElementById('reset');
+            const copyMessage = document.getElementById('copy-message');
+            const directionGroup = document.getElementById('direction-group');
+
+            // Initial colors
+            const defaultColors = [
+                { color: '#1a73e8', position: '0%' },
+                { color: '#ffffff', position: '100%' }
+            ];
+
+            // Initialize the tool
+            function init() {
+                defaultColors.forEach((color, index) => {
+                    addColorStop(color.color, color.position, index === 0);
+                });
+                updateGradient();
+            }
+
+            // Add a color stop
+            function addColorStop(color = '#000000', position = '0%', isFirst = false) {
+                const colorStop = document.createElement('div');
+                colorStop.className = 'color-stop';
+                
+                const colorPreview = document.createElement('div');
+                colorPreview.className = 'color-preview';
+                colorPreview.style.backgroundColor = color;
+                
+                const colorInput = document.createElement('input');
+                colorInput.type = 'text';
+                colorInput.className = 'color-value';
+                colorInput.value = color;
+                colorInput.placeholder = 'Hex, RGB, or HSL';
+                
+                const positionInput = document.createElement('input');
+                positionInput.type = 'text';
+                positionInput.className = 'stop-position';
+                positionInput.value = position;
+                positionInput.placeholder = 'Position';
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.className = 'remove-color';
+                removeBtn.textContent = '×';
+                removeBtn.addEventListener('click', function() {
+                    colorStop.remove();
+                    updateGradient();
+                });
+                
+                // Only show remove button if not the first color
+                if (!isFirst) {
+                    colorStop.appendChild(removeBtn);
+                }
+                
+                colorStop.appendChild(colorPreview);
+                colorStop.appendChild(colorInput);
+                colorStop.appendChild(positionInput);
+                
+                colorStopsContainer.appendChild(colorStop);
+                
+                // Add event listeners
+                colorInput.addEventListener('input', function() {
+                    colorPreview.style.backgroundColor = this.value;
+                    updateGradient();
+                });
+                
+                positionInput.addEventListener('input', function() {
+                    updateGradient();
+                });
+            }
+
+            // Update the gradient preview and CSS output
+            function updateGradient() {
+                const type = gradientType.value;
+                const direction = gradientDirection.value;
+                const colorStops = [];
+                
+                // Get all color stops
+                document.querySelectorAll('.color-stop').forEach(stop => {
+                    const color = stop.querySelector('.color-value').value;
+                    const position = stop.querySelector('.stop-position').value || '0%';
+                    colorStops.push(`${color} ${position}`);
+                });
+                
+                // Generate CSS
+                let css;
+                if (type === 'linear') {
+                    css = `linear-gradient(${direction}, ${colorStops.join(', ')})`;
+                } else {
+                    css = `radial-gradient(circle, ${colorStops.join(', ')})`;
+                }
+                
+                // Update preview and output
+                gradientPreview.style.background = css;
+                cssOutput.textContent = `background: ${css};`;
+            }
+
+            // Copy CSS to clipboard
+            function copyCss() {
+                const text = cssOutput.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    copyMessage.style.display = 'block';
+                    setTimeout(() => {
+                        copyMessage.style.display = 'none';
+                    }, 2000);
+                });
+            }
+
+            // Clear all color stops
+            function clearAll() {
+                colorStopsContainer.innerHTML = '';
+                updateGradient();
+            }
+
+            // Reset to default
+            function reset() {
+                clearAll();
+                gradientType.value = 'linear';
+                gradientDirection.value = 'to right';
+                defaultColors.forEach((color, index) => {
+                    addColorStop(color.color, color.position, index === 0);
+                });
+                updateGradient();
+            }
+
+            // Toggle direction options based on gradient type
+            function toggleDirectionOptions() {
+                if (gradientType.value === 'radial') {
+                    directionGroup.style.display = 'none';
+                } else {
+                    directionGroup.style.display = 'block';
+                }
+                updateGradient();
+            }
+
+            // Event listeners
+            gradientType.addEventListener('change', toggleDirectionOptions);
+            gradientDirection.addEventListener('change', updateGradient);
+            addColorBtn.addEventListener('click', function() {
+                addColorStop();
+                updateGradient();
+            });
+            copyCssBtn.addEventListener('click', copyCss);
+            clearAllBtn.addEventListener('click', clearAll);
+            resetBtn.addEventListener('click', reset);
+
+            // Initialize the tool
+            init();
+        });
+    </script>
+</body>
+</html>

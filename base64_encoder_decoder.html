@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base64 Encoder/Decoder | Tool Wonder</title>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-color: #202124;
+            --bg-color: #ffffff;
+            --border-color: #dadce0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --success-color: #34a853;
+            --error-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .tool-card {
+            background-color: var(--bg-color);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 16px;
+            min-height: 150px;
+            resize: vertical;
+            transition: all 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px var(--primary-light);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d5bba;
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #c5c5c5;
+        }
+
+        .message {
+            color: var(--primary-color);
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .swap-btn {
+            display: flex;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .swap-btn button {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 500;
+            max-width: 200px;
+        }
+
+        .swap-btn button:hover {
+            background-color: var(--primary-light);
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .status.success {
+            background-color: rgba(52, 168, 83, 0.1);
+            color: var(--success-color);
+            display: block;
+        }
+
+        .status.error {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: var(--error-color);
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .buttons button {
+                flex: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Base64 Encoder/Decoder</h1>
+        
+        <div class="tool-card">
+            <div class="input-group">
+                <label for="input-text">Input Text</label>
+                <textarea id="input-text" placeholder="Enter text to encode or Base64 to decode" autofocus></textarea>
+            </div>
+            
+            <div class="buttons">
+                <button id="encode-btn" class="btn-primary">Encode</button>
+                <button id="decode-btn" class="btn-primary">Decode</button>
+            </div>
+            
+            <div class="swap-btn">
+                <button id="swap-btn">↕ Swap Input/Output</button>
+            </div>
+            
+            <div class="input-group">
+                <label for="output-text">Output</label>
+                <textarea id="output-text" placeholder="Results will appear here" readonly></textarea>
+            </div>
+            
+            <div id="status" class="status"></div>
+            
+            <div class="buttons">
+                <button id="copy-btn" class="btn-secondary">Copy Output</button>
+                <button id="clear-btn" class="btn-secondary">Clear All</button>
+            </div>
+            
+            <div id="message" class="message">Output copied to clipboard!</div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const inputText = document.getElementById('input-text');
+            const outputText = document.getElementById('output-text');
+            const encodeBtn = document.getElementById('encode-btn');
+            const decodeBtn = document.getElementById('decode-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const swapBtn = document.getElementById('swap-btn');
+            const messageEl = document.getElementById('message');
+            const statusEl = document.getElementById('status');
+
+            // Encode text to Base64
+            function encodeBase64() {
+                try {
+                    const text = inputText.value;
+                    const encoded = btoa(unescape(encodeURIComponent(text)));
+                    outputText.value = encoded;
+                    showStatus('Text successfully encoded to Base64', 'success');
+                } catch (err) {
+                    showStatus('Error: Could not encode the input', 'error');
+                }
+            }
+
+            // Decode Base64 to text
+            function decodeBase64() {
+                try {
+                    const text = inputText.value.trim();
+                    const decoded = decodeURIComponent(escape(atob(text)));
+                    outputText.value = decoded;
+                    showStatus('Base64 successfully decoded to text', 'success');
+                } catch (err) {
+                    showStatus('Error: Invalid Base64 input', 'error');
+                    outputText.value = '';
+                }
+            }
+
+            // Show status message
+            function showStatus(message, type) {
+                statusEl.textContent = message;
+                statusEl.className = 'status ' + type;
+            }
+
+            // Copy output to clipboard
+            function copyOutput() {
+                if (outputText.value.trim() === '') {
+                    showStatus('No output to copy', 'error');
+                    return;
+                }
+                
+                outputText.select();
+                document.execCommand('copy');
+                
+                // Show message
+                messageEl.style.display = 'block';
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 2000);
+            }
+
+            // Clear all inputs and outputs
+            function clearAll() {
+                inputText.value = '';
+                outputText.value = '';
+                statusEl.className = 'status';
+                statusEl.textContent = '';
+                inputText.focus();
+            }
+
+            // Swap input and output
+            function swapText() {
+                const temp = inputText.value;
+                inputText.value = outputText.value;
+                outputText.value = temp;
+                inputText.focus();
+            }
+
+            // Auto-detect Base64 and decode
+            function autoDetect() {
+                const text = inputText.value.trim();
+                
+                // Simple Base64 detection (optional)
+                if (/^[A-Za-z0-9+/]+={0,2}$/.test(text) && text.length > 0) {
+                    decodeBase64();
+                }
+            }
+
+            // Event listeners
+            encodeBtn.addEventListener('click', encodeBase64);
+            decodeBtn.addEventListener('click', decodeBase64);
+            copyBtn.addEventListener('click', copyOutput);
+            clearBtn.addEventListener('click', clearAll);
+            swapBtn.addEventListener('click', swapText);
+            
+            // Optional: Auto-detect Base64 when pasting
+            inputText.addEventListener('input', debounce(autoDetect, 500));
+            
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    encodeBase64();
+                }
+            });
+
+            // Debounce function for input events
+            function debounce(func, delay) {
+                let timeout;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => func.apply(context, args), delay);
+                };
+            }
+        });
+    </script>
+</body>
+</html>

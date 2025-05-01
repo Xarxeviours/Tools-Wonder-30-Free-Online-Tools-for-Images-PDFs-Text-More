@@ -1,0 +1,550 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Poem Generator | Multi-Tool</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-color: #202124;
+            --bg-color: #ffffff;
+            --border-color: #dadce0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --success-color: #34a853;
+            --error-color: #ea4335;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .tool-card {
+            background-color: var(--bg-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .upload-area.drag-over {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .upload-text {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            color: #5f6368;
+            font-size: 14px;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .preview-container {
+            display: none;
+            margin-top: 20px;
+            gap: 20px;
+            flex-direction: column;
+        }
+
+        @media (min-width: 768px) {
+            .preview-container {
+                flex-direction: row;
+            }
+        }
+
+        .image-preview {
+            flex: 1;
+            max-width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .poem-container {
+            flex: 1;
+            background-color: var(--primary-light);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            white-space: pre-line;
+            font-style: italic;
+            line-height: 1.8;
+        }
+
+        .poem-title {
+            font-weight: bold;
+            font-style: normal;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #0d5bba;
+        }
+
+        .btn-primary:disabled {
+            background-color: #c5c5c5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #c5c5c5;
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #2d9249;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .status.success {
+            background-color: rgba(52, 168, 83, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .status.error {
+            background-color: rgba(234, 67, 53, 0.1);
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .loading-spinner {
+            border: 4px solid var(--primary-light);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .share-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .share-btn {
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .twitter {
+            background-color: #1DA1F2;
+            color: white;
+        }
+
+        .facebook {
+            background-color: #4267B2;
+            color: white;
+        }
+
+        @media (max-width: 600px) {
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Poem Generator</h1>
+        
+        <div class="tool-card">
+            <div class="upload-area" id="upload-area">
+                <div class="upload-icon">
+                    <i class="fas fa-image"></i>
+                </div>
+                <div class="upload-text">Upload an Image</div>
+                <div class="upload-subtext">Click to browse or drag & drop</div>
+                <input type="file" id="file-input" accept="image/*">
+            </div>
+            
+            <div class="loading" id="loading">
+                <div class="loading-spinner"></div>
+                <p>Generating your poem... This may take a moment.</p>
+            </div>
+            
+            <div class="preview-container" id="preview-container">
+                <div class="image-preview">
+                    <img id="preview-image" src="" alt="Uploaded image">
+                </div>
+                <div class="poem-container" id="poem-container">
+                    <div class="poem-title" id="poem-title"></div>
+                    <div id="poem-content"></div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button id="generate-btn" class="btn-primary" disabled>
+                    <i class="fas fa-magic"></i> Generate Poem
+                </button>
+                <button id="copy-btn" class="btn-success" disabled>
+                    <i class="far fa-copy"></i> Copy Poem
+                </button>
+                <button id="clear-btn" class="btn-secondary">
+                    <i class="fas fa-eraser"></i> Clear All
+                </button>
+            </div>
+            
+            <div class="share-buttons" id="share-buttons" style="display: none;">
+                <button class="share-btn twitter" id="twitter-share">
+                    <i class="fab fa-twitter"></i> Share on Twitter
+                </button>
+                <button class="share-btn facebook" id="facebook-share">
+                    <i class="fab fa-facebook-f"></i> Share on Facebook
+                </button>
+            </div>
+            
+            <div id="status" class="status"></div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM elements
+            const uploadArea = document.getElementById('upload-area');
+            const fileInput = document.getElementById('file-input');
+            const generateBtn = document.getElementById('generate-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const previewContainer = document.getElementById('preview-container');
+            const previewImage = document.getElementById('preview-image');
+            const poemContainer = document.getElementById('poem-container');
+            const poemTitle = document.getElementById('poem-title');
+            const poemContent = document.getElementById('poem-content');
+            const statusEl = document.getElementById('status');
+            const loadingEl = document.getElementById('loading');
+            const shareButtons = document.getElementById('share-buttons');
+            const twitterShare = document.getElementById('twitter-share');
+            const facebookShare = document.getElementById('facebook-share');
+            
+            // Gemini API key
+            const GEMINI_API_KEY = 'AIzaSyCgB8hibcLVoei84nW3pihBWSPjlHZ5AwM';
+            let uploadedImage = null;
+            
+            // Handle file selection
+            fileInput.addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    handleFileSelection(e.target.files[0]);
+                }
+            });
+            
+            // Handle drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                uploadArea.classList.add('drag-over');
+            }
+            
+            function unhighlight() {
+                uploadArea.classList.remove('drag-over');
+            }
+            
+            uploadArea.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files.length > 0) {
+                    handleFileSelection(files[0]);
+                }
+            });
+            
+            // Handle file selection
+            function handleFileSelection(file) {
+                if (!file.type.match('image.*')) {
+                    showStatus('Please upload an image file', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage = e.target.result;
+                    previewImage.src = uploadedImage;
+                    previewContainer.style.display = 'flex';
+                    generateBtn.disabled = false;
+                    shareButtons.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+            
+            // Click upload area to trigger file input
+            uploadArea.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Generate poem using Gemini API
+            generateBtn.addEventListener('click', async function() {
+                if (!uploadedImage) {
+                    showStatus('Please upload an image first', 'error');
+                    return;
+                }
+                
+                // Show loading state
+                loadingEl.style.display = 'block';
+                generateBtn.disabled = true;
+                poemContent.textContent = '';
+                poemTitle.textContent = '';
+                
+                try {
+                    // Convert image to base64
+                    const base64Image = uploadedImage.split(',')[1];
+                    
+                    // Call Gemini API
+                    const poem = await generatePoem(base64Image);
+                    
+                    // Display the poem
+                    if (poem.title && poem.content) {
+                        poemTitle.textContent = poem.title;
+                        poemContent.textContent = poem.content;
+                        copyBtn.disabled = false;
+                        shareButtons.style.display = 'flex';
+                        showStatus('Poem generated successfully!', 'success');
+                    } else {
+                        throw new Error('Invalid poem format received from API');
+                    }
+                } catch (error) {
+                    console.error('Error generating poem:', error);
+                    showStatus('Failed to generate poem. Please try again.', 'error');
+                } finally {
+                    loadingEl.style.display = 'none';
+                    generateBtn.disabled = false;
+                }
+            });
+            
+            // Generate poem using Gemini API
+            async function generatePoem(base64Image) {
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${GEMINI_API_KEY}`;
+                
+                const requestBody = {
+                    contents: [{
+                        parts: [
+                            { text: "Generate a creative poem inspired by this image. First provide a title for the poem, then the poem itself. The poem should be 4-6 stanzas long and capture the mood, colors, and essence of the image. Format your response with the title on the first line followed by the poem on subsequent lines." },
+                            {
+                                inlineData: {
+                                    mimeType: "image/jpeg",
+                                    data: base64Image
+                                }
+                            }
+                        ]
+                    }]
+                };
+                
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Extract the generated text
+                const generatedText = data.candidates[0].content.parts[0].text;
+                
+                // Split into title and content
+                const firstNewline = generatedText.indexOf('\n');
+                const title = generatedText.substring(0, firstNewline).replace('Title:', '').trim();
+                const content = generatedText.substring(firstNewline + 1).trim();
+                
+                return { title, content };
+            }
+            
+            // Copy poem to clipboard
+            copyBtn.addEventListener('click', function() {
+                const poemText = `${poemTitle.textContent}\n\n${poemContent.textContent}`;
+                navigator.clipboard.writeText(poemText).then(() => {
+                    showStatus('Poem copied to clipboard!', 'success');
+                }).catch(err => {
+                    showStatus('Failed to copy poem', 'error');
+                    console.error('Copy failed:', err);
+                });
+            });
+            
+            // Share on Twitter
+            twitterShare.addEventListener('click', function() {
+                const poemText = `${poemTitle.textContent}\n\n${poemContent.textContent}`;
+                const shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(poemText)}&hashtags=AIPoem`;
+                window.open(shareUrl, '_blank');
+            });
+            
+            // Share on Facebook
+            facebookShare.addEventListener('click', function() {
+                const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`;
+                window.open(shareUrl, '_blank');
+            });
+            
+            // Clear all
+            clearBtn.addEventListener('click', function() {
+                uploadedImage = null;
+                previewImage.src = '';
+                previewContainer.style.display = 'none';
+                poemTitle.textContent = '';
+                poemContent.textContent = '';
+                fileInput.value = '';
+                generateBtn.disabled = true;
+                copyBtn.disabled = true;
+                shareButtons.style.display = 'none';
+                showStatus('Cleared all content', 'success');
+            });
+            
+            // Show status message
+            function showStatus(message, type) {
+                statusEl.textContent = message;
+                statusEl.className = 'status ' + type;
+                statusEl.style.display = 'block';
+                
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

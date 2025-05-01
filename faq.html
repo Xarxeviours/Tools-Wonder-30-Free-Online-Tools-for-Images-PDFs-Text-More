@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Frequently asked questions about our comprehensive collection of free online tools including image, document, calculator, text, web development, color, SEO, and utility tools.">
+    <title>FAQ - Tools Wonder | Answers About Our Free Online Tools</title>
+    <style>
+        :root {
+            --primary-blue: #1a73e8;
+            --primary-light: #e8f0fe;
+            --text-dark: #202124;
+            --text-medium: #5f6368;
+            --text-light: #ffffff;
+            --bg-white: #ffffff;
+            --border-light: #dadce0;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+        }
+
+        body {
+            background-color: var(--bg-white);
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: var(--text-medium);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .category-btn {
+            padding: 10px 20px;
+            background-color: var(--primary-light);
+            color: var(--primary-blue);
+            border: none;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+        }
+
+        .faq-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            color: var(--primary-blue);
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 15px;
+            font-size: 1.5rem;
+        }
+
+        .faq-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .faq-item {
+            background-color: var(--bg-white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .faq-question {
+            padding: 20px;
+            background-color: var(--primary-light);
+            color: var(--primary-blue);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .faq-question:hover {
+            background-color: rgba(26, 115, 232, 0.9);
+            color: var(--text-light);
+        }
+
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-answer-content {
+            padding: 20px 0;
+            color: var(--text-medium);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 500px;
+        }
+
+        .faq-item.active .faq-question {
+            background-color: var(--primary-blue);
+            color: var(--text-light);
+        }
+
+        .toggle-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        @media (max-width: 768px) {
+            .faq-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+        }
+
+        /* Structured data for SEO */
+        .structured-data {
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Frequently Asked Questions</h1>
+            <p class="subtitle">Find answers to common questions about our comprehensive collection of free online tools for all your needs.</p>
+        </header>
+
+        <div class="faq-categories">
+            <button class="category-btn active" data-category="all">All Tools</button>
+            <button class="category-btn" data-category="image">Image Tools</button>
+            <button class="category-btn" data-category="document">Document Tools</button>
+            <button class="category-btn" data-category="calculator">Calculator Tools</button>
+            <button class="category-btn" data-category="text">Text Tools</button>
+            <button class="category-btn" data-category="web">Web Tools</button>
+            <button class="category-btn" data-category="color">Color Tools</button>
+            <button class="category-btn" data-category="seo">SEO Tools</button>
+            <button class="category-btn" data-category="utility">Utility Tools</button>
+        </div>
+
+        <!-- Image Tools FAQ -->
+        <div class="faq-section" data-category="image">
+            <h2 class="section-title"><i class="fas fa-image"></i> Image Tools</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How does the Image Converter work?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Our Image Converter allows you to easily convert between different image formats (JPG, PNG, GIF, WEBP, etc.). Simply upload your image, select the desired output format, and download the converted file. The conversion happens directly in your browser for maximum privacy and speed.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Is there a limit to image size for compression?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Our Image Compressor can handle files up to 25MB in size. For best results with large images, we recommend resizing them first using our Image Resizer tool before compression.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How accurate is the Image to Text (OCR) tool?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Our OCR technology achieves about 95% accuracy with clear, standard fonts. Accuracy may decrease with handwritten text, unusual fonts, or low-quality images. For best results, use high-contrast images with horizontal text.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Tools FAQ -->
+        <div class="faq-section" data-category="document">
+            <h2 class="section-title"><i class="fas fa-file-alt"></i> Document Tools</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Are my documents secure when using PDF tools?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes, all document processing happens directly in your browser. Your files are never uploaded to our servers, ensuring complete privacy and security. For added protection with sensitive documents, our PDF Lock tool lets you add password protection.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What formats can I convert to/from with Document Converter?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Our Document Converter supports PDF, Word (DOC/DOCX), Excel (XLS/XLSX), PowerPoint (PPT/PPTX), and text files (TXT). You can convert between any of these formats while preserving formatting where possible.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculator Tools FAQ -->
+        <div class="faq-section" data-category="calculator">
+            <h2 class="section-title"><i class="fas fa-calculator"></i> Calculator Tools</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How accurate is the Loan EMI Calculator?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Our EMI Calculator uses standard financial formulas to provide precise calculations. Results match bank calculations when using the same parameters (loan amount, interest rate, and tenure). Note that actual loan terms may vary slightly based on lender policies.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Does the Currency Converter use live rates?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Yes, our Currency Converter fetches real-time exchange rates from reliable financial sources. When offline or if the API fails, it uses cached rates with a clear timestamp so you know how current the information is.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Tools FAQ -->
+        <div class="faq-section" data-category="text">
+            <h2 class="section-title"><i class="fas fa-font"></i> Text Tools</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How does the Text Encryptor/Decryptor work?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Our encryption tool uses AES-256 bit encryption, one of the most secure standards available. You provide a password which is used to encrypt your text. The same password is required to decrypt it later. The process happens locally in your browser for maximum security.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Web/Developer Tools FAQ -->
+        <div class="faq-section" data-category="web">
+            <h2 class="section-title"><i class="fas fa-code"></i> Web/Developer Tools</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What does the HTML/CSS/JS Minifier do?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Our minifier removes all unnecessary characters (whitespace, comments, etc.) from your code without changing its functionality. This reduces file size for faster webpage loading. A "beautifier" option is also available to reformat minified code for readability.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How does the JSON Formatter & Validator help?</span>
+                        <span class="faq-toggle">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>This tool checks your JSON data for syntax errors and formats it with proper indentation for better readability. It highlights errors with line numbers and descriptions, making it invaluable for developers working with APIs or configuration files.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Color Tools FAQ -->
+        <div class="faq-section" data-category="color">
+            <h2 class="section-title"><i class="fas fa-palette"></i> Color Tools</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>How accurate is the Color Picker from Image?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>The Color Picker samples pixels directly from your uploaded image with pixel-level precision. You can pick colors from any part of an image and get the exact HEX, RGB, and HSL values. For best results, use high-quality images without heavy compression.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Tools FAQ -->
+        <div class="faq-section" data-category="seo">
+            <h2 class="section-title"><i class="fas fa-search"></i> SEO & Marketing Tools</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is keyword density and why does it matter?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>Keyword density measures how often a keyword appears relative to total words. Our tool calculates this percentage and highlights over-optimization risks. While not the only SEO factor, balanced keyword usage (typically 1-2%) helps content rank without triggering spam filters.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Utility Tools FAQ -->
+        <div class="faq-section" data-category="utility">
+            <h2 class="section-title"><i class="fas fa-tools"></i> Utility Tools</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>What is UUID generator?</span>
+                        <span class="toggle-icon">+</span>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-content">
+                            <p>A UUID (Universal Unique Identifier) is a 128-bit value used to uniquely identify an object or entity on the internet. Depending on the specific mechanisms used, a UUID is either guaranteed to be different or is, at least, extremely likely to be different from any other UUID generated until A.D. 3400.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Structured data for SEO (hidden) -->
+        <div class="structured-data">
+            <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": [
+                    {
+                        "@type": "Question",
+                        "name": "How does the Image Converter work?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Our Image Converter allows you to easily convert between different image formats (JPG, PNG, GIF, WEBP, etc.). Simply upload your image, select the desired output format, and download the converted file. The conversion happens directly in your browser for maximum privacy and speed."
+                        }
+                    },
+                    {
+                        "@type": "Question",
+                        "name": "Are my documents secure when using PDF tools?",
+                        "acceptedAnswer": {
+                            "@type": "Answer",
+                            "text": "Yes, all document processing happens directly in your browser. Your files are never uploaded to our servers, ensuring complete privacy and security. For added protection with sensitive documents, our PDF Lock tool lets you add password protection."
+                        }
+                    }
+                ]
+            }
+            </script>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Toggle FAQ items
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                });
+            });
+
+            // Category filtering
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const faqSections = document.querySelectorAll('.faq-section');
+            
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Update active button
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    const category = button.dataset.category;
+                    
+                    // Show/hide sections
+                    faqSections.forEach(section => {
+                        if (category === 'all' || section.dataset.category === category) {
+                            section.style.display = 'block';
+                        } else {
+                            section.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

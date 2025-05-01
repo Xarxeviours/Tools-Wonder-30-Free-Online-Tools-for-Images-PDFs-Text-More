@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Zone Converter | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-blue: #0077ff;
+            --light-blue: #e6f2ff;
+            --dark-blue: #0055cc;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #555;
+        }
+        
+        .tool-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border-top: 4px solid var(--primary-blue);
+            margin-bottom: 30px;
+        }
+        
+        .converter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .time-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .timezone-section {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .select-field, .input-field, .date-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .select-field {
+            background-color: var(--white);
+            cursor: pointer;
+        }
+        
+        .input-field:focus, .select-field:focus, .date-field:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+        
+        .time-input-group {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .time-input {
+            flex: 1;
+        }
+        
+        .result-card {
+            background-color: var(--light-blue);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            border-left: 4px solid var(--primary-blue);
+        }
+        
+        .result-time {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 10px;
+        }
+        
+        .result-timezone {
+            font-size: 1.2rem;
+            color: var(--dark-gray);
+        }
+        
+        .result-date {
+            font-size: 1rem;
+            color: #666;
+            margin-top: 10px;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .swap-btn {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .swap-icon {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .swap-icon:hover {
+            background-color: var(--dark-blue);
+            transform: rotate(180deg) scale(1.1);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .converter-container {
+                flex-direction: column;
+            }
+            
+            .time-section, .timezone-section {
+                width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .result-time {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Time Zone Converter</h1>
+            <p class="header-description">
+                Convert between different time zones instantly. Perfect for scheduling meetings, calls, or travel plans across time zones.
+            </p>
+        </header>
+        
+        <div class="tool-card">
+            <div class="converter-container">
+                <div class="time-section">
+                    <div class="form-group">
+                        <label for="from-date">Date</label>
+                        <input type="date" id="from-date" class="date-field">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="from-time">Time</label>
+                        <div class="time-input-group">
+                            <input type="time" id="from-time" class="input-field time-input" step="60">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="from-timezone">Time Zone</label>
+                        <select id="from-timezone" class="select-field"></select>
+                    </div>
+                </div>
+                
+                <div class="swap-btn">
+                    <div class="swap-icon" id="swap-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="17 1 21 5 17 9"></polyline>
+                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                            <polyline points="7 23 3 19 7 15"></polyline>
+                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="timezone-section">
+                    <div class="form-group">
+                        <label for="to-date">Converted Date</label>
+                        <input type="date" id="to-date" class="date-field" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="to-time">Converted Time</label>
+                        <div class="time-input-group">
+                            <input type="time" id="to-time" class="input-field time-input" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="to-timezone">Time Zone</label>
+                        <select id="to-timezone" class="select-field"></select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="result-card" id="result-card" style="display: none;">
+                <div class="result-time" id="result-time"></div>
+                <div class="result-timezone" id="result-timezone"></div>
+                <div class="result-date" id="result-date"></div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="convert-btn">Convert</button>
+                <button class="btn btn-secondary" id="clear-btn">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const fromDateInput = document.getElementById('from-date');
+            const fromTimeInput = document.getElementById('from-time');
+            const fromTimezoneSelect = document.getElementById('from-timezone');
+            const toDateInput = document.getElementById('to-date');
+            const toTimeInput = document.getElementById('to-time');
+            const toTimezoneSelect = document.getElementById('to-timezone');
+            const convertBtn = document.getElementById('convert-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const swapBtn = document.getElementById('swap-btn');
+            const resultCard = document.getElementById('result-card');
+            const resultTime = document.getElementById('result-time');
+            const resultTimezone = document.getElementById('result-timezone');
+            const resultDate = document.getElementById('result-date');
+            
+            // Time zones data (common time zones)
+            const timeZones = [
+                { name: 'Pacific Time (US & Canada)', value: 'America/Los_Angeles', offset: '-07:00' },
+                { name: 'Mountain Time (US & Canada)', value: 'America/Denver', offset: '-06:00' },
+                { name: 'Central Time (US & Canada)', value: 'America/Chicago', offset: '-05:00' },
+                { name: 'Eastern Time (US & Canada)', value: 'America/New_York', offset: '-04:00' },
+                { name: 'London (GMT/BST)', value: 'Europe/London', offset: '+01:00' },
+                { name: 'Berlin (CET/CEST)', value: 'Europe/Berlin', offset: '+02:00' },
+                { name: 'Paris (CET/CEST)', value: 'Europe/Paris', offset: '+02:00' },
+                { name: 'Tokyo (JST)', value: 'Asia/Tokyo', offset: '+09:00' },
+                { name: 'Sydney (AEST/AEDT)', value: 'Australia/Sydney', offset: '+10:00' },
+                { name: 'Beijing (CST)', value: 'Asia/Shanghai', offset: '+08:00' },
+                { name: 'Dubai (GST)', value: 'Asia/Dubai', offset: '+04:00' },
+                { name: 'Moscow (MSK)', value: 'Europe/Moscow', offset: '+03:00' },
+                { name: 'India (IST)', value: 'Asia/Kolkata', offset: '+05:30' },
+                { name: 'Singapore (SGT)', value: 'Asia/Singapore', offset: '+08:00' },
+                { name: 'Hong Kong (HKT)', value: 'Asia/Hong_Kong', offset: '+08:00' },
+                { name: 'UTC', value: 'UTC', offset: '+00:00' }
+            ];
+            
+            // Initialize the time zone selectors
+            function initializeTimeZones() {
+                // Clear existing options
+                fromTimezoneSelect.innerHTML = '';
+                toTimezoneSelect.innerHTML = '';
+                
+                // Add time zones to both selectors
+                timeZones.forEach(tz => {
+                    const option1 = document.createElement('option');
+                    option1.value = tz.value;
+                    option1.textContent = `${tz.name} (UTC${tz.offset})`;
+                    fromTimezoneSelect.appendChild(option1);
+                    
+                    const option2 = option1.cloneNode(true);
+                    toTimezoneSelect.appendChild(option2);
+                });
+                
+                // Set default time zones
+                fromTimezoneSelect.value = 'America/New_York';
+                toTimezoneSelect.value = 'Europe/London';
+                
+                // Set default date to today
+                const today = new Date();
+                fromDateInput.valueAsDate = today;
+                
+                // Set default time to current time (rounded to nearest hour)
+                const hours = today.getHours().toString().padStart(2, '0');
+                const minutes = today.getMinutes().toString().padStart(2, '0');
+                fromTimeInput.value = `${hours}:${minutes}`;
+            }
+            
+            // Convert time between time zones
+            function convertTime() {
+                const fromDate = fromDateInput.value;
+                const fromTime = fromTimeInput.value;
+                const fromTimezone = fromTimezoneSelect.value;
+                const toTimezone = toTimezoneSelect.value;
+                
+                if (!fromDate || !fromTime) {
+                    alert('Please enter a valid date and time');
+                    return;
+                }
+                
+                // Create a date string in ISO format (without timezone)
+                const dateTimeString = `${fromDate}T${fromTime}`;
+                
+                try {
+                    // Create a date object (treated as local time)
+                    const localDate = new Date(dateTimeString);
+                    
+                    // Format options for display
+                    const timeOptions = {
+                        timeStyle: 'short',
+                        timeZone: toTimezone
+                    };
+                    
+                    const dateOptions = {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        timeZone: toTimezone
+                    };
+                    
+                    // Format the converted time
+                    const convertedTime = localDate.toLocaleTimeString('en-US', timeOptions);
+                    const convertedDate = localDate.toLocaleDateString('en-US', dateOptions);
+                    const timeZoneName = new Intl.DateTimeFormat('en-US', {
+                        timeZoneName: 'long',
+                        timeZone: toTimezone
+                    }).format(localDate).split(', ')[1];
+                    
+                    // Update the output fields
+                    const convertedDateTime = new Date(localDate.toLocaleString('en-US', { timeZone: toTimezone }));
+                    toDateInput.valueAsDate = convertedDateTime;
+                    toTimeInput.value = convertedTime.split(' ')[0];
+                    
+                    // Update the result card
+                    resultTime.textContent = convertedTime;
+                    resultTimezone.textContent = timeZoneName;
+                    resultDate.textContent = convertedDate;
+                    resultCard.style.display = 'block';
+                    
+                } catch (error) {
+                    console.error('Error converting time:', error);
+                    alert('Error converting time. Please check your inputs.');
+                }
+            }
+            
+            // Swap time zones
+            function swapTimeZones() {
+                const temp = fromTimezoneSelect.value;
+                fromTimezoneSelect.value = toTimezoneSelect.value;
+                toTimezoneSelect.value = temp;
+                convertTime();
+            }
+            
+            // Clear all inputs
+            function clearAll() {
+                fromDateInput.valueAsDate = new Date();
+                fromTimeInput.value = '';
+                toDateInput.value = '';
+                toTimeInput.value = '';
+                resultCard.style.display = 'none';
+                
+                // Reset time to current time
+                const today = new Date();
+                const hours = today.getHours().toString().padStart(2, '0');
+                const minutes = today.getMinutes().toString().padStart(2, '0');
+                fromTimeInput.value = `${hours}:${minutes}`;
+                
+                convertTime();
+            }
+            
+            // Event listeners
+            convertBtn.addEventListener('click', convertTime);
+            clearBtn.addEventListener('click', clearAll);
+            swapBtn.addEventListener('click', swapTimeZones);
+            
+            // Also convert when any input changes
+            fromDateInput.addEventListener('change', convertTime);
+            fromTimeInput.addEventListener('input', convertTime);
+            fromTimezoneSelect.addEventListener('change', convertTime);
+            toTimezoneSelect.addEventListener('change', convertTime);
+            
+            // Initialize on page load
+            initializeTimeZones();
+            convertTime();
+        });
+    </script>
+</body>
+</html>

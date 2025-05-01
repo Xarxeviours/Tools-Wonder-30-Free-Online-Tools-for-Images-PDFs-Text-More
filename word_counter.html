@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Counter | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-blue: #0077ff;
+            --light-blue: #e6f2ff;
+            --dark-blue: #0055cc;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #555;
+        }
+        
+        .tool-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border-top: 4px solid var(--primary-blue);
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .textarea-field {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .textarea-field:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background-color: var(--light-blue);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+            border-left: 4px solid var(--primary-blue);
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--primary-blue);
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .copied-message {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 100;
+        }
+        
+        .copied-message.show {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .textarea-field {
+                min-height: 150px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Word Counter</h1>
+            <p class="header-description">
+                Instantly count words, characters, sentences, and paragraphs in your text. Perfect for writers, students, and professionals.
+            </p>
+        </header>
+        
+        <div class="tool-card">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="text-input">Enter or Paste Your Text</label>
+                    <textarea id="text-input" class="textarea-field" placeholder="Type or paste your text here to analyze it..."></textarea>
+                </div>
+            </div>
+            
+            <div class="stats-grid" id="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="word-count">0</div>
+                    <div class="stat-label">Words</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="char-count">0</div>
+                    <div class="stat-label">Characters (with spaces)</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="char-no-spaces-count">0</div>
+                    <div class="stat-label">Characters (no spaces)</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="sentence-count">0</div>
+                    <div class="stat-label">Sentences</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="paragraph-count">0</div>
+                    <div class="stat-label">Paragraphs</div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="copy-btn">Copy Results</button>
+                <button class="btn btn-secondary" id="clear-btn">Clear Text</button>
+            </div>
+        </div>
+        
+        <div class="copied-message" id="copied-message">Results copied to clipboard!</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const textInput = document.getElementById('text-input');
+            const wordCount = document.getElementById('word-count');
+            const charCount = document.getElementById('char-count');
+            const charNoSpacesCount = document.getElementById('char-no-spaces-count');
+            const sentenceCount = document.getElementById('sentence-count');
+            const paragraphCount = document.getElementById('paragraph-count');
+            const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copiedMessage = document.getElementById('copied-message');
+            
+            // Count text statistics
+            function countTextStats(text) {
+                // Word count (counts words separated by whitespace)
+                const words = text.trim() ? text.trim().split(/\s+/) : [];
+                const wordCountValue = words.length;
+                
+                // Character counts
+                const charCountValue = text.length;
+                const charNoSpacesValue = text.replace(/\s+/g, '').length;
+                
+                // Sentence count (counts sentences ending with .!? followed by space or end of string)
+                const sentences = text.trim() ? text.split(/[.!?]+(?=\s|$)/) : [];
+                let sentenceCountValue = sentences.filter(s => s.trim().length > 0).length;
+                if (sentenceCountValue === 0 && wordCountValue > 0) sentenceCountValue = 1;
+                
+                // Paragraph count (counts blocks of text separated by line breaks)
+                const paragraphs = text.trim() ? text.split(/\n+/).filter(p => p.trim().length > 0) : [];
+                const paragraphCountValue = paragraphs.length;
+                
+                // Update the UI
+                wordCount.textContent = wordCountValue.toLocaleString();
+                charCount.textContent = charCountValue.toLocaleString();
+                charNoSpacesCount.textContent = charNoSpacesValue.toLocaleString();
+                sentenceCount.textContent = sentenceCountValue.toLocaleString();
+                paragraphCount.textContent = paragraphCountValue.toLocaleString();
+            }
+            
+            // Copy results to clipboard
+            function copyResults() {
+                const results = `Word Count: ${wordCount.textContent}
+Characters (with spaces): ${charCount.textContent}
+Characters (no spaces): ${charNoSpacesCount.textContent}
+Sentences: ${sentenceCount.textContent}
+Paragraphs: ${paragraphCount.textContent}
+                
+Generated by Tools Wonder Word Counter`;
+                
+                navigator.clipboard.writeText(results).then(function() {
+                    // Show copied message
+                    copiedMessage.classList.add('show');
+                    setTimeout(function() {
+                        copiedMessage.classList.remove('show');
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            }
+            
+            // Clear all inputs and results
+            function clearAll() {
+                textInput.value = '';
+                wordCount.textContent = '0';
+                charCount.textContent = '0';
+                charNoSpacesCount.textContent = '0';
+                sentenceCount.textContent = '0';
+                paragraphCount.textContent = '0';
+            }
+            
+            // Event listeners
+            textInput.addEventListener('input', function() {
+                countTextStats(this.value);
+            });
+            
+            copyBtn.addEventListener('click', copyResults);
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Count stats on page load (in case there's any default text)
+            countTextStats(textInput.value);
+        });
+    </script>
+</body>
+</html>

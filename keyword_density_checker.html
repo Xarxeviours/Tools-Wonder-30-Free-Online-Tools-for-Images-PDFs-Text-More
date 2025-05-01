@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyword Density Checker | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-blue: #0077ff;
+            --light-blue: #e6f2ff;
+            --dark-blue: #0055cc;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #555;
+        }
+        
+        .tool-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border-top: 4px solid var(--primary-blue);
+            margin-bottom: 30px;
+        }
+        
+        .input-section {
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .textarea-field {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+        
+        .textarea-field:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+        
+        .options-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .option-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .option-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            accent-color: var(--primary-blue);
+            cursor: pointer;
+        }
+        
+        .input-number {
+            width: 80px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .results-section {
+            margin-top: 30px;
+        }
+        
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .results-title {
+            color: var(--primary-blue);
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+        
+        .results-summary {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .results-table th {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .results-table td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .results-table tr:nth-child(even) {
+            background-color: var(--light-gray);
+        }
+        
+        .results-table tr:hover {
+            background-color: #f0f6ff;
+        }
+        
+        .word-count {
+            font-weight: 600;
+            color: var(--primary-blue);
+        }
+        
+        .word-percentage {
+            color: #2ecc71;
+            font-weight: 600;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #777;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .options-section {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .results-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .textarea-field {
+                min-height: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Keyword Density Checker</h1>
+            <p class="header-description">
+                Analyze your text to find the most frequently used keywords and their density percentages. Perfect for SEO optimization.
+            </p>
+        </header>
+        
+        <div class="tool-card">
+            <div class="input-section">
+                <div class="form-group">
+                    <label for="text-input">Enter or Paste Your Text</label>
+                    <textarea id="text-input" class="textarea-field" placeholder="Paste your article, blog post, or any text content here..."></textarea>
+                </div>
+            </div>
+            
+            <div class="options-section">
+                <div class="option-group">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Analysis Options</h3>
+                    
+                    <label class="option-label">
+                        <input type="checkbox" class="option-checkbox" id="exclude-stopwords" checked>
+                        Exclude Common Stop Words
+                    </label>
+                    
+                    <label class="option-label">
+                        <input type="checkbox" class="option-checkbox" id="case-sensitive">
+                        Case Sensitive Analysis
+                    </label>
+                </div>
+                
+                <div class="option-group">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Filter Options</h3>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <label for="min-count" style="margin-bottom: 0;">Minimum Count:</label>
+                        <input type="number" id="min-count" class="input-number" min="1" value="2">
+                    </div>
+                    
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <label for="min-length" style="margin-bottom: 0;">Min Word Length:</label>
+                        <input type="number" id="min-length" class="input-number" min="1" value="3">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="analyze-btn">Analyze Text</button>
+                <button class="btn btn-secondary" id="clear-btn">Clear</button>
+            </div>
+            
+            <div class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <div class="results-title">Keyword Density Results</div>
+                    <div class="results-summary" id="results-summary"></div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="results-table" id="results-table">
+                        <thead>
+                            <tr>
+                                <th>Keyword</th>
+                                <th>Count</th>
+                                <th>Density</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body">
+                            <!-- Results will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="no-results" id="no-results" style="display: none;">
+                No keywords meet the current filter criteria. Try adjusting your settings.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const textInput = document.getElementById('text-input');
+            const excludeStopwords = document.getElementById('exclude-stopwords');
+            const caseSensitive = document.getElementById('case-sensitive');
+            const minCountInput = document.getElementById('min-count');
+            const minLengthInput = document.getElementById('min-length');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const resultsSection = document.getElementById('results-section');
+            const noResults = document.getElementById('no-results');
+            const resultsSummary = document.getElementById('results-summary');
+            const resultsBody = document.getElementById('results-body');
+            
+            // Common English stop words
+            const stopWords = new Set([
+                'a', 'an', 'and', 'are', 'as', 'at', 'be', 'but', 'by', 'for', 
+                'if', 'in', 'into', 'is', 'it', 'no', 'not', 'of', 'on', 'or', 
+                'such', 'that', 'the', 'their', 'then', 'there', 'these', 'they', 
+                'this', 'to', 'was', 'will', 'with', 'i', 'you', 'he', 'she', 
+                'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 
+                'his', 'its', 'our', 'their', 'mine', 'yours', 'hers', 'ours', 
+                'theirs', 'myself', 'yourself', 'himself', 'hers', 'itself', 
+                'ourselves', 'yourselves', 'themselves', 'what', 'which', 'who', 
+                'whom', 'whose', 'where', 'when', 'why', 'how', 'all', 'any', 
+                'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 
+                'only', 'own', 'same', 'so', 'than', 'too', 'very', 'can', 
+                'could', 'may', 'might', 'must', 'shall', 'should', 'will', 
+                'would', 'about', 'above', 'after', 'again', 'against', 'am', 
+                'because', 'before', 'below', 'between', 'both', 'down', 'during', 
+                'from', 'further', 'here', 'once', 'over', 'through', 'under', 
+                'until', 'up', 'were', 'what', 'when', 'where', 'which', 'while', 
+                'who', 'whom', 'why'
+            ]);
+            
+            // Analyze text
+            function analyzeText() {
+                const text = textInput.value.trim();
+                
+                if (!text) {
+                    alert('Please enter some text to analyze');
+                    return;
+                }
+                
+                const excludeStopWords = excludeStopwords.checked;
+                const isCaseSensitive = caseSensitive.checked;
+                const minCount = parseInt(minCountInput.value) || 1;
+                const minLength = parseInt(minLengthInput.value) || 1;
+                
+                // Process the text
+                const words = text.split(/\s+/);
+                const wordCounts = {};
+                let totalRelevantWords = 0;
+                
+                words.forEach(word => {
+                    // Clean the word (remove punctuation and convert to lowercase if not case sensitive)
+                    let cleanedWord = word.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()'"\[\]?]/g, '');
+                    
+                    if (!isCaseSensitive) {
+                        cleanedWord = cleanedWord.toLowerCase();
+                    }
+                    
+                    // Skip if word is too short
+                    if (cleanedWord.length < minLength) {
+                        return;
+                    }
+                    
+                    // Skip stop words if enabled
+                    if (excludeStopWords && stopWords.has(cleanedWord.toLowerCase())) {
+                        return;
+                    }
+                    
+                    // Count the word
+                    if (cleanedWord) {
+                        wordCounts[cleanedWord] = (wordCounts[cleanedWord] || 0) + 1;
+                        totalRelevantWords++;
+                    }
+                });
+                
+                // Convert to array and sort by count (descending)
+                const sortedWords = Object.entries(wordCounts)
+                    .filter(([word, count]) => count >= minCount)
+                    .sort((a, b) => b[1] - a[1]);
+                
+                // Display results
+                displayResults(sortedWords, totalRelevantWords);
+            }
+            
+            // Display results
+            function displayResults(wordCounts, totalWords) {
+                if (wordCounts.length === 0) {
+                    resultsSection.style.display = 'none';
+                    noResults.style.display = 'block';
+                    return;
+                }
+                
+                noResults.style.display = 'none';
+                resultsSection.style.display = 'block';
+                
+                // Update summary
+                resultsSummary.textContent = `Showing ${wordCounts.length} keywords from ${totalWords} total words`;
+                
+                // Clear previous results
+                resultsBody.innerHTML = '';
+                
+                // Add new results
+                wordCounts.forEach(([word, count]) => {
+                    const percentage = ((count / totalWords) * 100).toFixed(2);
+                    
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${word}</td>
+                        <td class="word-count">${count}</td>
+                        <td class="word-percentage">${percentage}%</td>
+                    `;
+                    resultsBody.appendChild(row);
+                });
+            }
+            
+            // Clear all inputs and results
+            function clearAll() {
+                textInput.value = '';
+                resultsSection.style.display = 'none';
+                noResults.style.display = 'none';
+            }
+            
+            // Event listeners
+            analyzeBtn.addEventListener('click', analyzeText);
+            clearBtn.addEventListener('click', clearAll);
+            
+            // Also analyze when pressing Ctrl+Enter in the textarea
+            textInput.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    e.preventDefault();
+                    analyzeText();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal - Tools Wonder</title>
+    <style>
+        :root {
+            --primary-blue: #0077ff;
+            --light-blue: #e6f2ff;
+            --dark-blue: #0055cc;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: #555;
+        }
+        
+        .section {
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+            border-top: 4px solid var(--primary-blue);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 119, 255, 0.1);
+        }
+        
+        h2 {
+            color: var(--primary-blue);
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: var(--dark-blue);
+            margin: 25px 0 15px;
+            font-size: 1.3rem;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        ul, ol {
+            margin-left: 25px;
+            margin-bottom: 20px;
+        }
+        
+        li {
+            margin-bottom: 10px;
+        }
+        
+        .last-updated {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .legal-nav {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        
+        .legal-nav a {
+            padding: 10px 20px;
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .legal-nav a.active, .legal-nav a:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .highlight-box {
+            background-color: var(--light-blue);
+            padding: 20px;
+            border-left: 4px solid var(--primary-blue);
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .legal-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Legal Information</h1>
+            <p class="header-description">
+                Transparency and trust are important to us. Please review our policies to understand how we operate.
+            </p>
+        </header>
+        
+        <div class="legal-nav">
+            <a href="#privacy-policy" class="active">Privacy Policy</a>
+            <a href="#terms-of-use">Terms of Use</a>
+        </div>
+        
+        <!-- Privacy Policy Section -->
+        <section id="privacy-policy" class="section">
+            <h2>Privacy Policy</h2>
+            <p class="last-updated"></p>
+            
+            <p>At Tools Wonder, we are committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our services.</p>
+            
+            <div class="highlight-box">
+                <strong>Key Point:</strong> We do not store your personal data or files processed through our tools on our servers.
+            </div>
+            
+            <h3>Information We Collect</h3>
+            <p>We may collect the following types of information:</p>
+            <ul>
+                <li><strong>Usage Data:</strong> Information about how you interact with our website and tools.</li>
+                <li><strong>Device Information:</strong> Browser type, operating system, and IP address for analytics.</li>
+                <li><strong>Cookies:</strong> We use cookies to improve your experience and analyze site traffic.</li>
+            </ul>
+            
+            <h3>How We Use Your Information</h3>
+            <p>The information we collect helps us to:</p>
+            <ol>
+                <li>Provide and maintain our services</li>
+                <li>Improve and optimize our tools</li>
+                <li>Understand how users interact with our platform</li>
+                <li>Detect and prevent technical issues</li>
+            </ol>
+            
+            <h3>Data Security</h3>
+            <p>We implement appropriate security measures to protect against unauthorized access, alteration, or destruction of data. However, no internet transmission is 100% secure.</p>
+            
+            <h3>Third-Party Services</h3>
+            <p>We may use third-party services (like analytics providers) that have their own privacy policies. We recommend reviewing these policies.</p>
+            
+            <h3>Changes to This Policy</h3>
+            <p>We may update our Privacy Policy periodically. We will notify you of any changes by posting the new policy on this page.</p>
+        </section>
+        
+        <!-- Terms of Use Section -->
+        <section id="terms-of-use" class="section">
+            <h2>Terms of Use</h2>
+            <p class="last-updated"></p>
+            
+            <p>By accessing or using Tools Wonder, you agree to be bound by these Terms of Use. If you disagree with any part, you may not use our services.</p>
+            
+            <div class="highlight-box">
+                <strong>Important:</strong> Our tools are provided "as is" without warranties of any kind.
+            </div>
+            
+            <h3>Use of Services</h3>
+            <p>You agree to use Tools Wonder:</p>
+            <ul>
+                <li>Only for lawful purposes</li>
+                <li>Without violating any applicable laws</li>
+                <li>Without attempting to disrupt or overload our systems</li>
+                <li>Without reverse engineering or copying our technology</li>
+            </ul>
+            
+            <h3>Intellectual Property</h3>
+            <p>All content and technology on Tools Wonder are owned by us or our licensors. You may not reproduce, distribute, or create derivative works without permission.</p>
+            
+            <h3>Limitation of Liability</h3>
+            <p>Tools Wonder will not be liable for any indirect, incidental, or consequential damages resulting from the use or inability to use our services.</p>
+            
+            <h3>User Responsibilities</h3>
+            <p>You are responsible for:</p>
+            <ol>
+                <li>Any content you process through our tools</li>
+                <li>Ensuring you have rights to any files you upload</li>
+                <li>Protecting your own devices and data</li>
+            </ol>
+            
+            <h3>Changes to Terms</h3>
+            <p>We reserve the right to modify these terms at any time. Your continued use constitutes acceptance of the revised terms.</p>
+            
+            <h3>Termination</h3>
+            <p>We may terminate or suspend access to our services immediately, without prior notice, for any breach of these Terms.</p>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab navigation between policies
+            const navLinks = document.querySelectorAll('.legal-nav a');
+            const sections = document.querySelectorAll('.section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active tab
+                    navLinks.forEach(nav => nav.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    const targetId = this.getAttribute('href');
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    document.querySelector(targetId).style.display = 'block';
+                    
+                    // Smooth scroll to section
+                    document.querySelector(targetId).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+            
+            // Initially hide all sections except the first one
+            sections.forEach((section, index) => {
+                if (index !== 0) {
+                    section.style.display = 'none';
+                }
+            });
+            
+            // Animation for sections when they come into view
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = 1;
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                section.style.opacity = 0;
+                section.style.transform = 'translateY(20px)';
+                section.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>

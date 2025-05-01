@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator | Tools Wonder</title>
+    <style>
+        :root {
+            --primary-blue: #0077ff;
+            --light-blue: #e6f2ff;
+            --dark-blue: #0055cc;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --border-radius: 8px;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: var(--primary-blue);
+            font-size: 2.3rem;
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background-color: var(--primary-blue);
+            border-radius: 2px;
+        }
+        
+        .header-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #555;
+        }
+        
+        .tool-card {
+            background-color: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            border-top: 4px solid var(--primary-blue);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .input-field, .select-field {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .select-field {
+            background-color: var(--white);
+            cursor: pointer;
+        }
+        
+        .input-field:focus, .select-field:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.1);
+        }
+        
+        .options-group {
+            margin-top: 25px;
+        }
+        
+        .option-label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+        
+        .option-checkbox {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            accent-color: var(--primary-blue);
+            cursor: pointer;
+        }
+        
+        .password-display {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: var(--light-gray);
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            word-break: break-all;
+            text-align: center;
+            position: relative;
+        }
+        
+        .password-text {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+            border-color: var(--primary-blue);
+        }
+        
+        .copied-message {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-blue);
+            color: var(--white);
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .copied-message.show {
+            opacity: 1;
+        }
+        
+        .strength-meter {
+            margin-top: 10px;
+            height: 5px;
+            background-color: #eee;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s, background-color 0.3s;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            border: none;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 119, 255, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--light-blue);
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--primary-blue);
+            color: var(--white);
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .password-display {
+                font-size: 1rem;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Password Generator</h1>
+            <p class="header-description">
+                Create strong, random passwords to keep your accounts secure. Customize the length and character types.
+            </p>
+        </header>
+        
+        <div class="tool-card">
+            <div class="form-group">
+                <label for="password-length">Password Length</label>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <input type="range" id="password-length" min="4" max="64" value="12" class="input-field" style="flex: 1; padding: 0;">
+                    <span id="length-value" style="font-weight: bold; min-width: 30px;">12</span>
+                </div>
+            </div>
+            
+            <div class="options-group">
+                <h3 style="color: var(--primary-blue); margin-bottom: 15px;">Character Types</h3>
+                
+                <label class="option-label">
+                    <input type="checkbox" class="option-checkbox" id="uppercase" checked>
+                    Include Uppercase Letters (A-Z)
+                </label>
+                
+                <label class="option-label">
+                    <input type="checkbox" class="option-checkbox" id="lowercase" checked>
+                    Include Lowercase Letters (a-z)
+                </label>
+                
+                <label class="option-label">
+                    <input type="checkbox" class="option-checkbox" id="numbers" checked>
+                    Include Numbers (0-9)
+                </label>
+                
+                <label class="option-label">
+                    <input type="checkbox" class="option-checkbox" id="special" checked>
+                    Include Special Characters (!@#$%^&*)
+                </label>
+            </div>
+            
+            <div class="password-display" id="password-display">
+                <span id="password-text" class="password-text">Click "Generate" to create a password</span>
+                <button class="copy-btn" id="copy-btn">Copy</button>
+                <span class="copied-message" id="copied-message">Copied to clipboard!</span>
+                <div class="strength-meter">
+                    <div class="strength-bar" id="strength-bar"></div>
+                </div>
+            </div>
+            
+            <div class="btn-group">
+                <button class="btn btn-primary" id="generate-btn">Generate Password</button>
+                <button class="btn btn-secondary" id="clear-btn">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const lengthSlider = document.getElementById('password-length');
+            const lengthValue = document.getElementById('length-value');
+            const uppercaseCheck = document.getElementById('uppercase');
+            const lowercaseCheck = document.getElementById('lowercase');
+            const numbersCheck = document.getElementById('numbers');
+            const specialCheck = document.getElementById('special');
+            const passwordDisplay = document.getElementById('password-display');
+            const passwordText = document.getElementById('password-text');
+            const generateBtn = document.getElementById('generate-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const copyBtn = document.getElementById('copy-btn');
+            const copiedMessage = document.getElementById('copied-message');
+            const strengthBar = document.getElementById('strength-bar');
+            
+            // Character sets
+            const characterSets = {
+                uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                lowercase: 'abcdefghijklmnopqrstuvwxyz',
+                numbers: '0123456789',
+                special: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+            };
+            
+            // Update length value display
+            lengthSlider.addEventListener('input', function() {
+                lengthValue.textContent = this.value;
+            });
+            
+            // Generate password
+            function generatePassword() {
+                const length = parseInt(lengthSlider.value);
+                const options = {
+                    uppercase: uppercaseCheck.checked,
+                    lowercase: lowercaseCheck.checked,
+                    numbers: numbersCheck.checked,
+                    special: specialCheck.checked
+                };
+                
+                // Validate at least one character type is selected
+                const selectedOptions = Object.values(options).filter(opt => opt);
+                if (selectedOptions.length === 0) {
+                    passwordText.textContent = 'Please select at least one character type';
+                    passwordText.style.color = '#e74c3c';
+                    strengthBar.style.width = '0%';
+                    return;
+                }
+                
+                // Reset text color
+                passwordText.style.color = 'var(--primary-blue)';
+                
+                // Build character pool based on selected options
+                let characterPool = '';
+                if (options.uppercase) characterPool += characterSets.uppercase;
+                if (options.lowercase) characterPool += characterSets.lowercase;
+                if (options.numbers) characterPool += characterSets.numbers;
+                if (options.special) characterPool += characterSets.special;
+                
+                // Generate password
+                let password = '';
+                const poolLength = characterPool.length;
+                
+                for (let i = 0; i < length; i++) {
+                    password += characterPool.charAt(Math.floor(Math.random() * poolLength));
+                }
+                
+                // Display password
+                passwordText.textContent = password;
+                
+                // Calculate and display password strength
+                updatePasswordStrength(password);
+            }
+            
+            // Calculate password strength
+            function updatePasswordStrength(password) {
+                let strength = 0;
+                const length = password.length;
+                
+                // Length contributes up to 50% of strength
+                strength += Math.min(length / 64 * 50, 50);
+                
+                // Character variety contributes the rest
+                const hasUppercase = /[A-Z]/.test(password);
+                const hasLowercase = /[a-z]/.test(password);
+                const hasNumbers = /[0-9]/.test(password);
+                const hasSpecial = /[^A-Za-z0-9]/.test(password);
+                
+                const varietyCount = [hasUppercase, hasLowercase, hasNumbers, hasSpecial]
+                    .filter(Boolean).length;
+                
+                strength += (varietyCount / 4) * 50;
+                
+                // Update strength bar
+                strengthBar.style.width = strength + '%';
+                
+                // Set color based on strength
+                if (strength < 40) {
+                    strengthBar.style.backgroundColor = '#e74c3c'; // Red
+                } else if (strength < 70) {
+                    strengthBar.style.backgroundColor = '#f39c12'; // Orange
+                } else {
+                    strengthBar.style.backgroundColor = '#2ecc71'; // Green
+                }
+            }
+            
+            // Copy password to clipboard
+            function copyToClipboard() {
+                const password = passwordText.textContent;
+                
+                // Don't copy placeholder text
+                if (password === 'Click "Generate" to create a password' || 
+                    password === 'Please select at least one character type') {
+                    return;
+                }
+                
+                navigator.clipboard.writeText(password).then(function() {
+                    // Show copied message
+                    copiedMessage.classList.add('show');
+                    setTimeout(function() {
+                        copiedMessage.classList.remove('show');
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            }
+            
+            // Clear password display
+            function clearPassword() {
+                passwordText.textContent = 'Click "Generate" to create a password';
+                passwordText.style.color = 'var(--primary-blue)';
+                strengthBar.style.width = '0%';
+            }
+            
+            // Event listeners
+            generateBtn.addEventListener('click', generatePassword);
+            clearBtn.addEventListener('click', clearPassword);
+            copyBtn.addEventListener('click', copyToClipboard);
+            
+            // Also copy when clicking on password display
+            passwordDisplay.addEventListener('click', function(e) {
+                if (e.target !== copyBtn && e.target !== passwordText) {
+                    copyToClipboard();
+                }
+            });
+            
+            // Generate a password on page load
+            generatePassword();
+        });
+    </script>
+</body>
+</html>
